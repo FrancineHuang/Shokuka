@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::prefix('recipe')->group(function () {
-    Route::get('/view/{recipe_id}', [RecipeController::class, 'view'])->name('recipe.view'); //レシピ投稿の表示ルート
+    Route::get('/show', [RecipeController::class, 'show'])->name('recipe.show'); //レシピ投稿の表示ルート
     Route::get('/search', [RecipeController::class, 'search'])->name('recipe.search'); //レシピの検索ルート
     Route::get('/create', [RecipeController::class, 'create'])->name('recipe.create'); //レシピの作成ルート
     Route::get('/update/{recipe_id}', [RecipeController::class, 'update'])->name('recipe.update'); //レシピの更新ルート
