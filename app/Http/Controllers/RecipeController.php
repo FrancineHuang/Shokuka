@@ -11,14 +11,13 @@ class RecipeController extends Controller
 {
     //レシピ投稿を取得
     //'SELECT * FROM users WHERE active = ?'
-    public function view() {
+    public function search() {
         
-        return view('recipe/view', compact('steps', 'ingredients')); 
     }
 
     //レシピの投稿を作成する
     public function create() {
-        return view('');
+        return view('recipe.create');
     }
 
     //作成したレシピを保存する
@@ -44,13 +43,13 @@ class RecipeController extends Controller
     }
 
     //作成したレシピを表示させる
-    public function recipeShow() {
-        return view('');
+    public function show() {
+        return view('recipe.show'); 
     }
 
     //レシピの投稿を編集する
     public function recipeEdit() {
-
+        
     }
 
     //レシピの投稿を更新する
