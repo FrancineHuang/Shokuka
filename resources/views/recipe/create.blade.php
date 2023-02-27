@@ -68,7 +68,7 @@
             <button type="submit" class="inline-flex items-center py-2.5 px-3 ml-2 text-sm font-medium text-red-800 bg-neutral-50 rounded-lg border border-red-700 hover:text-red-600 focus:ring-4 focus:outline-none focus:ring-red-300">
               <svg aria-hidden="true" class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>Search
             </button>
-            </form>
+          </form>
         </div>
       </div>
     </nav>
@@ -77,9 +77,12 @@
 
     <!--Mainはここから-->
   <main>
+    <form action="/recipe" method="post">
+    @csrf
 
     <!-- ● カード1 レシピを作成する：タイトル＋写真＋紹介文-->
     <div class="flex justify-center">
+      
       <div class="w-9/12 mt-36 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
         <h5 class="mb-2 text-1xl font-bold text-neutral-900">レシピを作成する</h5>
         <p class="mb-2 text-sm text-neutral-500 sm:text-base">クリックして料理の写真を載せる。</p>
@@ -91,7 +94,7 @@
         </div>
         <div class="my-3">
           <label for="recipe-title" class="mb-2 text-sm font-bold text-neutral-900 sm:text-base">1. レシピタイトル<span class="text-red-800">(＊30字以内)</span></label>
-          <input type="text" id="base-input" class="w-11/12 my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="レシピに合ったタイトルをつけてください。">
+          <input type="text" name="title" class="w-11/12 my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="レシピに合ったタイトルをつけてください。">
         </div>
         <div class="my-6">
           <label for="recipe-title" class="mb-2 text-sm font-bold text-neutral-900 sm:text-base">2. レシピの紹介文<span class="text-red-800">(＊200字以内)</span></label>
@@ -167,9 +170,10 @@
     <div class="my-10 mx-48 text-right">
       <button type="button" class="mx-2 inline-flex w-36 cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded border border-red-800 bg-white px-3 py-2 text-sm font-medium text-red-800 transition hover:border-gray-300 hover:bg-gray-100 focus:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
         取消</button>
-      <button type="button" class="mx-2 inline-flex w-36 cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded bg-red-800 px-3 py-2 text-sm font-medium text-neutral-50 transition hover:border-red-800 hover:bg-red-500 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-800">
+      <button type="submit" class="mx-2 inline-flex w-36 cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded bg-red-800 px-3 py-2 text-sm font-medium text-neutral-50 transition hover:border-red-800 hover:bg-red-500 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-800">
         公開</button>
     </div>
+    </form>
   </main>
     <!--Mainはここまで-->
 
