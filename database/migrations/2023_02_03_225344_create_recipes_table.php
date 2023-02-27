@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users'); //外部キー制約
             $table->string('cover_photo_path');
             $table->string('title');
-            $table->string('catchcopy');
+            $table->string('introduction');
             $table->string('person');
             $table->string('tip');
             // timestampと書いてしまうと、レコード挿入時、更新時に値が入らないので、DB::rawで直接書いています
