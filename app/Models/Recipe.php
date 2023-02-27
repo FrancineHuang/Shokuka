@@ -15,7 +15,7 @@ class Recipe extends Model
     protected $fillable = [
         'cover_photo_path',
         'title',
-        'catchcopy',
+        'introduction', //catchcopy -> introduction
         'person',
         'tip'
     ];
