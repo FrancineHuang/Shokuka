@@ -16,34 +16,43 @@ class RecipeController extends Controller
     }
 
     //レシピの投稿を作成する
-    public function create() {
-        return view('recipe.create');
+    public function createNewRecipe() {
+        //return view('recipe.create');
+        return 'Hey!!!You DID it!!!';
     }
 
     //作成したレシピを保存する
-    public function store(Request $request) {
-        $incomingFields = $request->validate([
-            'cover_photo_path' => 'required',
+    public function storeNewRecipe(Request $request) {
+
+        $recipe = $request->validate([
+            //'cover_photo_path' => 'required',
             'title' => 'required',
-            'catchcopy' => 'required',
+            'introduction' => 'required', //catchcopy -> introduction
             'person' => 'Required',
             'tip' => 'Required'
         ]);
 
-        $incomingFields['cover_photo_path'] = strip_tags($incomingFields['cover_photo_path']);
-        $incomingFields['title'] = strip_tags($incomingFields['title']);
-        $incomingFields['catchcopy'] = strip_tags($incomingFields['catchcopy']);
-        $incomingFields['person'] = strip_tags($incomingFields['person']);
-        $incomingFields['tip'] = strip_tags($incomingFields['tip']);
-        $incomingFields['user_id'] = auth()->id();
+        //$saveImagePath = $request->file('image')->store('recipe', 'public');
 
-        Recipe::create($incomingFields);
+        //$recipe->image = $saveImagePath;
+        //$recipe->save();
+        $recipe['title'] = strip_tags($recipe['title']);
+        $recipe['introduction'] = strip_tags($recipe['introduction']);
+        $recipe['person'] = strip_tags($recipe['person']);
+        $recipe['tip'] = strip_tags($recipe['tip']);
+        $recipe['user_id'] = auth()->id();
+        
 
-        return view('');
+        Recipe::create($recipe);
+
+        return view('recipe.show');
     }
 
     //作成したレシピを表示させる
     public function show() {
+        if(!auth()->check()) {
+            return redirect('/');
+        }
         return view('recipe.show'); 
     }
 
