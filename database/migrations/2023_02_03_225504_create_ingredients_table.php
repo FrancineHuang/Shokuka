@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('ingredients', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('recipe_id');
             $table->string('material');
             $table->string('quantity');
             $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('steps', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('recipe_id');
             $table->string('content');
             $table->string('step_photo_path')->nullable();
             $table->timestamp('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
