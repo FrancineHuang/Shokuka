@@ -6,6 +6,8 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\Step;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class RecipeController extends Controller
 {
@@ -17,20 +19,26 @@ class RecipeController extends Controller
 
     //レシピの投稿を作成する
     public function createNewRecipe() {
-        //return view('recipe.create');
-        return 'Hey!!!You DID it!!!';
+        return view('recipe.create');
     }
 
     //作成したレシピを保存する
     public function storeNewRecipe(Request $request) {
 
         $recipe = $request->validate([
-            //'cover_photo_path' => 'required',
+            'cover_photo_path' => 'required|image',
             'title' => 'required',
-            'introduction' => 'required', //catchcopy -> introduction
+            'introduction' => 'required', 
             'person' => 'Required',
             'tip' => 'Required'
         ]);
+        
+        $user = auth()->user();
+
+        $filename ='cover-'. $user->id . uniqid() . 'jpg'; //ユニークな画像名の付け方：uniqid()でランダムな英数字が出る
+
+        $coverImg = Image::make($request->file('cover_image')->fit(800, 600)->encode('jpg'));
+        Storage::put('public/cover_image/' . $filename , $coverImg);
 
         //$saveImagePath = $request->file('image')->store('recipe', 'public');
 
