@@ -37,11 +37,10 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('recipe')->group(function () {
     Route::get('/show', [RecipeController::class, 'show'])->name('recipe.show'); //レシピ投稿の表示ルート
-    Route::get('/search', [RecipeController::class, 'search'])->name('recipe.search'); //レシピの検索ルート
-    Route::get('/create', [RecipeController::class, 'create'])->name('recipe.create'); //レシピの作成ルート
-    Route::get('/update/{recipe_id}', [RecipeController::class, 'update'])->name('recipe.update'); //レシピの更新ルート
-    Route::get('/destroy/{recipe_id}', [RecipeController::class, 'destroy'])->name('recipe.destroy'); //レシピの削除機能
-    Route::post('/store', [RecipeController::class, 'store'])->name('recipe.store'); //レシピの保存機能
+    Route::get('/create', [RecipeController::class, 'createNewRecipe'])->name('recipe.create'); //レシピの作成ルート
+    Route::post('/store', [RecipeController::class, 'storeNewRecipe'])->name('recipe.store'); //レシピの保存機能
+    Route::get('/update/{id}', [RecipeController::class, 'update'])->name('recipe.update'); //レシピの更新ルート
+    Route::get('/destroy/{id}', [RecipeController::class, 'destroy'])->name('recipe.destroy'); //レシピの削除機能
 });
 
 
