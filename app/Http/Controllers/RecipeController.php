@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Models\Step;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -20,20 +21,38 @@ class RecipeController extends Controller
 
     //作成したレシピを保存する
     public function storeNewRecipe(Request $request) {
+        //各入力項目またはアップロード項目のリクエスト
         $request->validate([
+            //recipesテーブルの関連項目
             'cover_photo_path' => 'required|image|max:5120',
             'title' => 'required',
             'introduction' => 'required', 
             'person' => 'required',
-            'tip' => 'required'
+            'tip' => 'required',
+
+            //ingredientsの関連項目（材料・分量）
+            //dot notationを使って、ingredientsの入力項目を紐つける。
+            'ingredients' => 'required|array',
+            'ingredients.*.material' => 'required|string',
+            'ingredients.*.quantity' => 'required|string',
+
+            //stepsテーブルの関連項目(作り方)
+            //dot notationを使って、stepsの入力項目を紐つける。
+            'steps'=>'required|array',
+            'steps.*.content' => 'required|string',
+            'steps.*.step_photo_path' => 'nullable|image|max:5120'
+
         ]);
-    
+        
+        //認証されたユーザーをGET
         $user = User::find(auth()->id());
     
+        //レシピのカバー写真を保存する
         $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
         $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
         Storage::put('public/cover_image/' . $filename, $coverImg);
     
+        //レシピ(recipes)のデータを受け取る
         $recipe = new Recipe();
         $recipe->cover_photo_path = $filename;
         $recipe->title = strip_tags($request->input('title'));
@@ -41,7 +60,17 @@ class RecipeController extends Controller
         $recipe->person = strip_tags($request->input('person'));
         $recipe->tip = strip_tags($request->input('tip'));
         $recipe->user_id = $user->id;
-        $recipe->save();
+        
+
+        //トランザクションでレシピ、材料と作り方ステップを保存する。
+        DB::transaction(function () use ($recipe, $request) {
+            $recipe->save();
+
+            //材料・分量（ingredients）のデータを受け取る
+
+            //ステップ（steps）のデータを受け取る
+        });
+
     
         return 'You did it';
     }
