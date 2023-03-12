@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
+use App\Models\Step;
+use App\Models\Ingredient;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Recipe extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        //'cover_photo_path',
+        'cover_photo_path',
         'title',
         'introduction', //catchcopy -> introduction
         'person',
         'tip'
     ];
-
 
 
     //レシピを取得
@@ -30,21 +31,28 @@ class Recipe extends Model
             ->select('recipes.*')
             ->where('user_id', '=', Auth::id())
             ->whereNull('deleted_at');
-        
+    
         if(!empty($query_step)) {
             $query_recipes->leftJoin('recipe_steps', 'recipe_steps.recipe_id', '=', 'recipes.id')
-            ->where('recipe_steps.step_id', '=', $query_step);
+                ->where('recipe_steps.step_id', '=', $query_step);
         }
-
+    
         if(!empty($query_ingredient)) {
             $query_recipes->leftJoin('recipe_ingredients', 'recipe_ingredients.recipe_id', '=', 'recipes.id')
-            ->where('recipe_ingredients.ingredient_id', '=', $query_ingredient);
+                ->where('recipe_ingredients.ingredient_id', '=', $query_ingredient);
         }
-
+    
         $recipes = $query_recipes->get();
-
+    
         return $recipes;
+    }
 
+    public function steps() {
+        return $this->hasMany(Step::class);
+    }
+
+    public function ingredients() {
+        return $this->hasMany(Ingredient::class);
     }
 
     //ステップ写真があれば->保存する
