@@ -17,7 +17,7 @@ class Recipe extends Model
     protected $fillable = [
         'cover_photo_path',
         'title',
-        'introduction', //catchcopy -> introduction
+        'introduction',
         'person',
         'tip'
     ];
@@ -47,21 +47,18 @@ class Recipe extends Model
         return $recipes;
     }
 
+    /**
+     * The steps that belong to the recipe.
+     */
     public function steps() {
-        return $this->hasMany(Step::class);
+        return $this->hasMany(Step::class, 'recipe_id', 'step_id');
     }
 
+    /**
+     * The ingredients that belong to the recipe.
+     */
     public function ingredients() {
-        return $this->hasMany(Ingredient::class);
+        return $this->hasMany(Ingredient::class, 'recipe_id', 'ingredient_id');
     }
-
-    //ステップ写真があれば->保存する
-    //なければ->デフォルトの写真を使う。
-    //後ほどステップ写真の実装をするときにコメントアウトを外す。
-    /*protected function coverPhoto(): Attribute {
-        return Attribute::make(get: function($value) {
-            return $value ? '/storage/step_images/' . $value : '/default-step-photo.jpg';
-        });
-    }*/
 
 }

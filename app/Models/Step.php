@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Recipe;
 
 class Step extends Model
 {
@@ -14,8 +15,8 @@ class Step extends Model
         'content'
     ];
 
-    public function recipe() {
-        return $this->belongsTo(Recipe::class, 'recipe_id');
+    public function recipes() {
+        return $this->belongsTo(Recipe::class, 'recipe_id', 'step_id');
     }
 
 }
