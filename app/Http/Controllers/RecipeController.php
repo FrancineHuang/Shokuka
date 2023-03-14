@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\Step;
+use Exception;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -21,58 +24,72 @@ class RecipeController extends Controller
 
     //作成したレシピを保存する
     public function storeNewRecipe(Request $request) {
-        //各入力項目またはアップロード項目のリクエスト
         $request->validate([
-            //recipesテーブルの関連項目
-            'cover_photo_path' => 'required|image|max:5120',
-            'title' => 'required',
-            'introduction' => 'required', 
-            'person' => 'required',
-            'tip' => 'required',
+            'cover_photo_path' => ['required','image', 'max:5120'],
+            'title' => ['required', 'string', 'max:255'],
+            'introduction' => ['required', 'string', 'max:255'], 
+            'person' => ['required', 'string', 'max:255'],
+            'tip' => ['required', 'string', 'max:255'],
 
-            //ingredientsの関連項目（材料・分量）
-            //dot notationを使って、ingredientsの入力項目を紐つける。
-            'ingredients' => 'required|array',
-            'ingredients.*.material' => 'required|string',
-            'ingredients.*.quantity' => 'required|string',
-
-            //stepsテーブルの関連項目(作り方)
-            //dot notationを使って、stepsの入力項目を紐つける。
-            'steps'=>'required|array',
-            'steps.*.content' => 'required|string',
-            'steps.*.step_photo_path' => 'nullable|image|max:5120'
+            //'ingredients' => ['required', 'array'],
+            'ingredients.*.material' => ['required', 'string', 'max:255'],
+            'ingredients.*.quantity' => ['required', 'string', 'max:255'],
+            
+            //'steps' => ['required', 'array'],
+            'steps.*.content' => ['required', 'string', 'max:255'],
+            'steps.*.step_photo_path' => ['nullable','image','max:5120'],
 
         ]);
-        
-        //認証されたユーザーをGET
+
+
         $user = User::find(auth()->id());
-    
-        //レシピのカバー写真を保存する
-        $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
-        $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
-        Storage::put('public/cover_image/' . $filename, $coverImg);
-    
-        //レシピ(recipes)のデータを受け取る
+
+        // Save the recipe details
         $recipe = new Recipe();
-        $recipe->cover_photo_path = $filename;
         $recipe->title = strip_tags($request->input('title'));
         $recipe->introduction = strip_tags($request->input('introduction'));
         $recipe->person = strip_tags($request->input('person'));
         $recipe->tip = strip_tags($request->input('tip'));
         $recipe->user_id = $user->id;
+
+        // Save the cover photo
+        $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
+        $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
+        Storage::put('public/cover_image/' . $filename, $coverImg);
+        $recipe->cover_photo_path = $filename;
+
+        // Save the recipe
+        $recipe->save();
+
+        // Save the ingredients
+        $ingredient = new Ingredient();
+        $ingredient->material = strip_tags($request->input('material'));
+        $ingredient->quantity = strip_tags($request->input('quantity'));
+        $ingredient->recipe_id = $recipe->id;
+        $ingredient->user_id = $user->id;
+        $ingredient->save();
         
 
-        //トランザクションでレシピ、材料と作り方ステップを保存する。
-        DB::transaction(function () use ($recipe, $request) {
-            $recipe->save();
+        // Save the step contents
+        $step = new Step();
+        $step->content = strip_tags($request->input('content'));
+        $step->user_id = $user->id;
+        $step->recipe_id = $recipe->id;
 
-            //材料・分量（ingredients）のデータを受け取る
+        // Save the step photo
+        $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
+        $stepImg = Image::make($request->file('step_photo_path'))->fit(300, 300)->encode('jpg');
+        Storage::put('public/step_image/' . $filename, $stepImg);
+        $step->step_photo_path = $filename;
+        
+        // Save the step
+        $step->save();
 
-            //ステップ（steps）のデータを受け取る
-        });
 
-    
-        return 'You did it';
+        return response()->json([
+            'message' => 'Recipe created successfully.',
+            'data' => $recipe
+        ], 201);
     }
 
     //作成したレシピを表示させる
