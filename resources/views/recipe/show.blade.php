@@ -38,18 +38,12 @@
               材料
             </h5>
               <dl class="w-8/12">
+                @foreach ($showIngredientData as $ingredient)
                 <div class="flex flex-row w-full border-b-2 border-neutral-100 border-opacity-100 py-4">
-                  <dt class="text-neutral-800">{{ $showIngredientData['material'] }}</dt>
-                  <dd class="text-neutral-800 text-right font-semibold pl-8">{{ $showIngredientData['quantity'] }}</dd>
+                  <dt class="text-neutral-800">{{ $ingredient->material }}</dt>
+                  <dd class="text-neutral-800 text-right font-semibold pl-8">{{ $ingredient->quantity }}</dd>
                 </div>
-                <div class="flex flex-row w-full border-b-2 border-neutral-100 border-opacity-100 py-4">
-                  <dt class="text-neutral-800">テキストテキスト</dt>
-                  <dd class="text-neutral-800 text-right font-semibold pl-8">300g</dd>
-                </div>
-                <div class="flex flex-row w-full border-b-2 border-neutral-100 border-opacity-100 py-4">
-                  <dt class="text-neutral-800">テキストテキスト</dt>
-                  <dd class="text-neutral-800 text-right font-semibold pl-8">大さじ1</dd>
-                </div>
+                @endforeach
               </dl>
           </div>
       <!--　レシピのステップリスト　-->
@@ -61,9 +55,11 @@
             <div class="container mx-auto flex px-5 py-10 md:flex-row flex-col items-center">
               <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
                 <p class="sm:text-xl text-base font-bold mb-4 text-red-800">Step 1 </p>
+                @foreach ($showStepData as $step)
                 <p class="w-full my-2 text-gray-900 text-sm block">
-                テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト
+                {{ $step->content }}
                 </p>
+                @endforeach
               </div>
               <div class="lg:max-w-md lg:w-2/12 md:w-1/3 w-1/4">
                 <a href="#"><img class="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600"></a>
