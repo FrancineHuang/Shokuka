@@ -120,17 +120,25 @@ class RecipeController extends Controller
 
     //レシピの詳細
     public function showRecipe($recipe_id) {
+        // Fetch recipe data
         $showRecipeData = $this->recipe->fetchRecipeData($recipe_id);
-        return view('recipe.show', compact('showRecipeData')); 
+    
+        // Fetch ingredient data for the recipe
+        $showIngredientData = $this->ingredient
+            ->leftJoin('recipe_ingredients', 'ingredients.id', '=', 'recipe_ingredients.ingredient_id')
+            ->where('recipe_ingredients.recipe_id', '=', $recipe_id)
+            ->get();
+    
+        // Fetch step data for the recipe
+        $showStepData = $this->step
+            ->leftJoin('recipe_steps', 'steps.id', '=', 'recipe_steps.step_id')
+            ->where('recipe_steps.recipe_id', '=', $recipe_id)
+            ->get();
+    
+        return view('recipe.show', compact('showRecipeData', 'showIngredientData', 'showStepData'));
     }
-    public function showStep($id) {
-        $showStepData = $this->step->fetchStepData($id);
-        return view('recipe.show', compact('showStepData')); 
-    }
-    public function showIngredient($ingredient_id) {
-        $showIngredientData = $this->ingredient->fetchIngredientData($ingredient_id);
-        return view('recipe.show', compact('showIngredientData'));
-    }
+    
+
 
     //レシピの投稿を編集する
     public function recipeEdit() {
