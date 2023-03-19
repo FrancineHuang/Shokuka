@@ -19,7 +19,10 @@ class Recipe extends Model
         'title',
         'introduction',
         'person',
-        'tip'
+        'tip',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
 
@@ -48,17 +51,33 @@ class Recipe extends Model
     }
 
     /**
-     * The steps that belong to the recipe.
+     * Step（作り方ステップ）モデルとリレーション
      */
     public function steps() {
-        return $this->hasMany(Step::class, 'recipe_id', 'step_id');
+        return $this->belongsToMany(Step::class, 'recipe_steps');
     }
 
     /**
-     * The ingredients that belong to the recipe.
+     * Ingredient（材料）モデルとリレーション
      */
     public function ingredients() {
-        return $this->hasMany(Ingredient::class, 'recipe_id', 'ingredient_id');
+        return $this->belongsToMany(Ingredient::class, 'recipe_ingredients');
+    }
+
+    /**
+     * recipeテーブルから一意の投稿データを取得
+     */
+
+    public function fetchRecipeData($recipe_id) {
+        return $this->find($recipe_id);
+    }
+
+    /**
+     * ユーザーIDに紐づいたレシピリストを全て取得する
+     */
+    public function getAllRecipesByUserId($user_id) {
+        $result = $this->where('user_id', $user_id)->with('ingredient', 'step')->get();
+        return $result;
     }
 
 }

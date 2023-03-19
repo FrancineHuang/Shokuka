@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Ingredient;
 use App\Models\Recipe;
+use App\Models\RecipeIngredient;
+use App\Models\RecipeStep;
 use App\Models\Step;
 use Exception;
 use Illuminate\Contracts\Cache\Store;
@@ -16,6 +18,17 @@ use Intervention\Image\Facades\Image;
 
 class RecipeController extends Controller
 {
+
+    private $recipe;
+    private $step;
+    private $ingredient;
+
+    public function __construct() {
+        $this->recipe = new Recipe();
+        $this->step = new Step();
+        $this->ingredient = new Ingredient();
+
+    }
 
     //レシピの投稿を作成する
     public function createNewRecipe() {
@@ -44,7 +57,7 @@ class RecipeController extends Controller
 
         $user = User::find(auth()->id());
 
-        // Save the recipe details
+        // レシピの文字データを保存する
         $recipe = new Recipe();
         $recipe->title = strip_tags($request->input('title'));
         $recipe->introduction = strip_tags($request->input('introduction'));
@@ -52,16 +65,16 @@ class RecipeController extends Controller
         $recipe->tip = strip_tags($request->input('tip'));
         $recipe->user_id = $user->id;
 
-        // Save the cover photo
+        // レシピのカバー写真を保存する
         $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
         $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
         Storage::put('public/cover_image/' . $filename, $coverImg);
         $recipe->cover_photo_path = $filename;
 
-        // Save the recipe
+        // レシピを保存
         $recipe->save();
 
-        // Save the ingredients
+        // Ingredient(材料)を保存する
         $ingredient = new Ingredient();
         $ingredient->material = strip_tags($request->input('material'));
         $ingredient->quantity = strip_tags($request->input('quantity'));
@@ -70,21 +83,34 @@ class RecipeController extends Controller
         $ingredient->save();
         
 
-        // Save the step contents
+        // Step（作り方ステップ）の内容を保存する
         $step = new Step();
         $step->content = strip_tags($request->input('content'));
         $step->user_id = $user->id;
         $step->recipe_id = $recipe->id;
 
-        // Save the step photo
+        // Step（作り方ステップ）の写真を保存する
         $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
         $stepImg = Image::make($request->file('step_photo_path'))->fit(300, 300)->encode('jpg');
         Storage::put('public/step_image/' . $filename, $stepImg);
         $step->step_photo_path = $filename;
         
-        // Save the step
+        // Step（作り方ステップ）を保存する
         $step->save();
 
+        // recipe_step→中間テーブルの紐つけ
+        $recipe_step = new RecipeStep();
+        $recipe_step->recipe_id = $recipe->id;
+        $recipe_step->step_id = $step->id;
+        $recipe_step->timestamps = false;
+        $recipe_step->save();
+
+        // recipe_ingredient→中間テーブルの紐つけ
+        $recipe_ingredient = new RecipeIngredient();
+        $recipe_ingredient->recipe_id = $recipe->id;
+        $recipe_ingredient->ingredient_id = $ingredient->id;
+        $recipe_ingredient->timestamps = false;
+        $recipe_ingredient->save();
 
         return response()->json([
             'message' => 'Recipe created successfully.',
@@ -92,12 +118,18 @@ class RecipeController extends Controller
         ], 201);
     }
 
-    //作成したレシピを表示させる
-    public function show() {
-        if(!auth()->check()) {
-            return redirect('/');
-        }
-        return view('recipe.show'); 
+    //レシピの詳細
+    public function showRecipe($recipe_id) {
+        $showRecipeData = $this->recipe->fetchRecipeData($recipe_id);
+        return view('recipe.show', compact('showRecipeData')); 
+    }
+    public function showStep($id) {
+        $showStepData = $this->step->fetchStepData($id);
+        return view('recipe.show', compact('showStepData')); 
+    }
+    public function showIngredient($ingredient_id) {
+        $showIngredientData = $this->ingredient->fetchIngredientData($ingredient_id);
+        return view('recipe.show', compact('showIngredientData'));
     }
 
     //レシピの投稿を編集する
