@@ -15,7 +15,16 @@ class Ingredient extends Model
     ];
 
     public function recipe() {
-        return $this->belongsTo(Recipe::class, 'recipe_id', 'ingredient_id');
+        return $this->belongsTo(Recipe::class, 'recipe_id');
     }
+
+    /**
+     * recipeテーブルから一意の投稿データを取得
+     */
+
+    public function fetchIngredientData($recipe_id) {
+        return $this->find($recipe_id);
+    }
+    
 
 }

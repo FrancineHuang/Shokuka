@@ -69,7 +69,7 @@ class Recipe extends Model
      */
 
     public function fetchRecipeData($recipe_id) {
-        return $this->find($recipe_id);
+        return $this->with('ingredients', 'steps')->find($recipe_id);
     }
 
     /**
