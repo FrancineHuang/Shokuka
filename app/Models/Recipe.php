@@ -14,7 +14,11 @@ class Recipe extends Model
 {
     use HasFactory;
 
+    protected $table = 'recipes';
+
     protected $fillable = [
+        'id',
+        'user_id',
         'cover_photo_path',
         'title',
         'introduction',
@@ -25,43 +29,29 @@ class Recipe extends Model
         'deleted_at'
     ];
 
+    protected $primaryKey = 'id';
 
-    //レシピを取得
-    public function getRecipe() {
-        $query_step = Request::query('step');
-        $query_ingredient = Request::query('ingredient');
-        $query_recipes = Recipe::query()
-            ->select('recipes.*')
-            ->where('user_id', '=', Auth::id())
-            ->whereNull('deleted_at');
-    
-        if(!empty($query_step)) {
-            $query_recipes->leftJoin('recipe_steps', 'recipe_steps.recipe_id', '=', 'recipes.id')
-                ->where('recipe_steps.step_id', '=', $query_step);
-        }
-    
-        if(!empty($query_ingredient)) {
-            $query_recipes->leftJoin('recipe_ingredients', 'recipe_ingredients.recipe_id', '=', 'recipes.id')
-                ->where('recipe_ingredients.ingredient_id', '=', $query_ingredient);
-        }
-    
-        $recipes = $query_recipes->get();
-    
-        return $recipes;
-    }
 
     /**
-     * Step（作り方ステップ）モデルとリレーション
+     * ユーザーモデルとのリレーション
+     */
+
+    public function users() {
+        return $this->belongsTo(User::class);
+    }
+    
+    /**
+     * Step（作り方ステップ）モデルとのリレーション
      */
     public function steps() {
-        return $this->belongsToMany(Step::class, 'recipe_steps');
+        return $this->hasMany(Step::class, 'recipe_id', 'id');
     }
 
     /**
-     * Ingredient（材料）モデルとリレーション
+     * Ingredient（材料）モデルとのリレーション
      */
     public function ingredients() {
-        return $this->belongsToMany(Ingredient::class, 'recipe_ingredients');
+        return $this->hasMany(Ingredient::class, 'recipe_id', 'id');
     }
 
     /**
@@ -69,14 +59,15 @@ class Recipe extends Model
      */
 
     public function fetchRecipeData($recipe_id) {
-        return $this->with('ingredients', 'steps')->find($recipe_id);
+        $recipeData = $this->with('ingredients', 'steps')->where('id', $recipe_id)->firstOrFail();
+        return $recipeData;
     }
 
     /**
      * ユーザーIDに紐づいたレシピリストを全て取得する
      */
     public function getAllRecipesByUserId($user_id) {
-        $result = $this->where('user_id', $user_id)->with('ingredient', 'step')->get();
+        $result = $this->where('user_id', $user_id)->with('ingredients', 'steps')->get();
         return $result;
     }
 
