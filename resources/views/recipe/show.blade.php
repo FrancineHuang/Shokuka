@@ -12,6 +12,10 @@
             <h5 class="mb-2 text-2xl font-bold text-neutral-900">{{ $showRecipeData->title }}</h5>
             <!-- 「いいね」をした場合はfa-solidで書き換える（ここに後で実装）-->
             <i class="fa-regular fa-heart text-red-800 px-3 py-1"></i>
+            <div class="text-right">
+              <a href="{{ route('recipe.edit', ['recipe_id' => $showRecipeData->id]) }}" class="fa-regular fa-pen-to-square text-red-800 px-3 py-1"></a>
+              <i class="fas fa-trash text-red-800 px-3 py-1"></i>
+            </div>
           </div>
       <!--　レシピのカバー写真と作成・更新日　-->
           <div class="flex flex-row">
