@@ -2,7 +2,7 @@
 <x-header-footer>
   <form action="{{ route('recipe.update', ['recipe_id' => $editRecipeData->id]) }}" method="POST" enctype="multipart/form-data">
   @csrf
-  @method('POST')
+  @method('PUT')
   <!-- ● カード1 レシピを作成する：タイトル＋写真＋紹介文-->
   <div class="flex justify-center">
 
