@@ -14,7 +14,10 @@
             <i class="fa-regular fa-heart text-red-800 px-3 py-1"></i>
             <div class="text-right">
               <a href="{{ route('recipe.edit', ['recipe_id' => $showRecipeData->id]) }}" class="fa-regular fa-pen-to-square text-red-800 px-3 py-1"></a>
-              <i class="fas fa-trash text-red-800 px-3 py-1"></i>
+              <form action="{{ route('recipe.destroy', ['recipe_id' => $showRecipeData->id]) }}" method="POST">
+                @csrf
+              <button onclick="return comfirm('本当に削除してもよろしいでしょうか？')" class="fas fa-trash text-red-800 px-3 py-1"></button>
+              </form>
             </div>
           </div>
       <!--　レシピのカバー写真と作成・更新日　-->
