@@ -151,88 +151,165 @@ class RecipeController extends Controller
     
 
     //レシピの投稿を更新する
-    public function updateRecipe(Request $request, $recipe_id, $id) {
+    public function updateRecipe(Request $request, $id) {
         $request->validate([
-            'cover_photo_path' => ['required','image', 'max:5120'],
-            'title' => ['required', 'string', 'max:255'],
-            'introduction' => ['required', 'string', 'max:255'], 
-            'person' => ['required', 'string', 'max:255'],
-            'tip' => ['required', 'string', 'max:255'],
+            'cover_photo_path' => ['sometimes','image', 'max:5120'],
+            'title' => ['sometimes', 'string', 'max:255'],
+            'introduction' => ['sometimes', 'string', 'max:255'], 
+            'person' => ['sometimes', 'string', 'max:255'],
+            'tip' => ['sometimes', 'string', 'max:255'],
     
-            //'ingredients' => ['required', 'array'],
-            'ingredients.*.material' => ['required', 'string', 'max:255'],
-            'ingredients.*.quantity' => ['required', 'string', 'max:255'],
+            //'ingredients' => ['sometimes', 'array'],
+            'ingredients.*.material' => ['sometimes', 'string', 'max:255'],
+            'ingredients.*.quantity' => ['sometimes', 'string', 'max:255'],
             
-            //'steps' => ['required', 'array'],
-            'steps.*.content' => ['required', 'string', 'max:255'],
+            //'steps' => ['sometimes', 'array'],
+            'steps.*.content' => ['sometimes', 'string', 'max:255'],
             'steps.*.step_photo_path' => ['nullable','image','max:5120'],
+    
         ]);
-        
-        $recipe = Recipe::findOrFail($recipe_id);
-        $step = Step::find($recipe_id);
-        $ingredient = Ingredient::find($recipe_id);
-        $user = User::find(auth()->id());
     
-        // レシピの内容（文字）を更新する
-        $recipe->title = strip_tags($request->input('title'));
-        $recipe->introduction = strip_tags($request->input('introduction'));
-        $recipe->person = strip_tags($request->input('person'));
-        $recipe->tip = strip_tags($request->input('tip'));
+        $recipe = Recipe::find($id);
+        $user = auth()->id();
     
-        // もしカバー写真を変更すれば、更新する
+        // 編集権限がない場合、エラーを返す
+        if ($recipe->user_id != $user) {
+            return response()->json([
+                'message' => 'You do not have permission to edit this recipe.'
+            ], 403);
+        }
+    
+        if ($request->has('title')) {
+            $recipe->title = strip_tags($request->input('title'));
+        }
+    
+        if ($request->has('introduction')) {
+            $recipe->introduction = strip_tags($request->input('introduction'));
+        }
+    
+        if ($request->has('person')) {
+            $recipe->person = strip_tags($request->input('person'));
+        }
+    
+        if ($request->has('tip')) {
+            $recipe->tip = strip_tags($request->input('tip'));
+        }
+    
         if ($request->hasFile('cover_photo_path')) {
-            // 古い写真を削除する
-            Storage::delete('public/cover_image/' . $recipe->cover_photo_path);
-            // 新しい写真を保存する
-            $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
+            $filename = 'cover-' . $user . '-' . uniqid() . '.jpg';
             $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
             Storage::put('public/cover_image/' . $filename, $coverImg);
+            Storage::delete('public/cover_image/' . $recipe->cover_photo_path);
             $recipe->cover_photo_path = $filename;
         }
     
-        // レシピのデータを更新する
         $recipe->save();
     
-        // 材料・分量のデータを更新する
+        // Ingredient(材料)の更新
         if ($request->has('ingredients')) {
-            foreach ($request->input('ingredients') as $ingredient) {
-                $newIngredient = Ingredient::findOrFail($ingredient['id']);
-                $newIngredient->material = strip_tags($ingredient['material']);
-                $newIngredient->quantity = strip_tags($ingredient['quantity']);
-                $newIngredient->save();
-            }
-        }
+            foreach ($request->input('ingredients') as $ingredientData) {
+                if (isset($ingredientData['id'])) {
+                    $ingredient = Ingredient::find($ingredientData['id']);
     
-        // 作り方ステップの内容を更新する
-        if ($request->has('steps')) {
-            foreach ($request->input('steps') as $step) {
-                $newStep = Step::findOrFail($step['id']);
-                $newStep->content = strip_tags($step['content']);
+                    // 編集権限がない場合、スキップする
+                    if ($ingredient->user_id != $user) {
+                        continue;
+                    }
     
-                // もしステップ写真を変更すれば、更新する
-                if ($stepPhoto = $step['step_photo_path']) {
-                    // 古い写真を削除する
-                    Storage::delete('public/step_image/' . $newStep->step_photo_path);
-                    // 新しい写真を保存する
-                    $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
-                    $stepImg = Image::make($stepPhoto)->fit(800, 600)->encode('jpg');
-                    Storage::put('public/step_image/' . $filename, $stepImg);
-                    $newStep->step_photo_path = $filename;
+                    if (isset($ingredientData['material'])) {
+                        $ingredient->material = strip_tags($ingredientData['material']);
+                    }
+    
+                    if (isset($ingredientData['quantity'])) {
+                        $ingredient->quantity = strip_tags($ingredientData['quantity']);
+                    }
+    
+                    $ingredient->save();
                 }
-                
-                $newStep->save();
+                else {
+                    $ingredient = new Ingredient();
+                    $ingredient->material = strip_tags($ingredientData['material']);
+                    $ingredient->quantity = strip_tags($ingredientData['quantity']);
+                    $ingredient->recipe_id = $recipe->id;
+                    $ingredient->user_id = $user;
+                    $ingredient->save();
+                }
             }
         }
-    
-        return redirect()->route('recipe.show', ['recipe_id' => $recipe_id])->with('message', 'レシピが更新されました！');
-    }
+
+        // Step（作り方）の更新
+        if ($request->has('steps')) {
+            foreach ($request->input('steps') as $stepData) {
+                if (isset($stepData['id'])) {
+                    $step = Step::find($stepData['id']);
+                
+                    // 編集権限がない場合、スキップする
+                    if ($step->user_id != $user) {
+                        continue;
+                    }
+                
+                    if (isset($stepData['content'])) {
+                        $step->content = strip_tags($stepData['content']);
+                    }
+                
+                    if ($request->hasFile('step_photo_path')) {
+                        $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
+                        $stepImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
+                        Storage::put('public/step_image/' . $filename, $stepImg);
+                        Storage::delete('public/step_image/' . $step->step_photo_path);
+                        $step->step_photo_path = $filename;
+                    }
+                
+                    $step->save();
+                }
+                else {
+                    $step = new Step();
+                    $step->content = strip_tags($stepData['content']);
+                    $step->recipe_id = $recipe->id;
+                    $step->user_id = $user;
+                
+                    if ($request->hasFile('step_photo_path')) {
+                        $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
+                        $stepImg = Image::make($request->file('cover_photo_path'))->fit(300, 400)->encode('jpg');
+                        Storage::put('public/step_image/' . $filename, $stepImg);
+                        $step->step_photo_path = $filename;
+                    }
+                
+                    $step->save();
+                }
+            }
+        }
+
+    return response()->json([
+        'message' => 'Recipe has been updated successfully.'
+    ]);
+}
     
 
-    public function destroyRecipe(Request $request) {
-        $recipe = $request->all();
+    public function destroyRecipe(int $recipe_id) {
+        $recipe = Recipe::find($recipe_id);
+        $user = auth()->id();
+
+        // レシピを存在するかどうかを確認する
+        if (!$recipe) {
+            return response()->json([
+                'message' => 'Recipe not found'
+            ], 404);
+        }
+
+        // Check if the user has permission to delete the recipe
+        if ($recipe->user_id != $user) {
+            return response()->json([
+                'message' => 'You do not have permission to delete this recipe.'
+            ], 403);
+        }
+
         //論理削除を実装する
-        Recipe::where('id', $recipe['recipe_id'])->update(['deleted_at' => date("Y-m-d H:i:s", time())]);
-        return redirect( route('dashboard'));
-        //レシピ削除のルートをまだ確定できなくて、しばらくdashboardに戻ろうと考える。
+        $recipe->delete();
+
+        //レシピ削除のルートをまだ確定できなくて、しばらくjsonで返そうと考える。
+        return response()->json([
+            'message' => 'Recipe has been deleted successfully.'
+        ]);
     }
 }
