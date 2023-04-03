@@ -57,6 +57,14 @@ class Recipe extends Model
     }
 
     /**
+     * Comment（コメント）モデルとのリレーション
+     */
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
      * recipeテーブルから一意の投稿データを取得
      */
 

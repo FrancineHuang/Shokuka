@@ -47,10 +47,20 @@ class User extends Authenticatable
     ];
 
     /**
-     * userとrecipeの関係を定義
+     * usersとrecipesの関係を定義
      */
 
     public function recipes() {
         return $this->hasMany(Recipe::class);
     }
+
+    /**
+     * usersとcommentsの関係を定義
+     */
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+
 }
