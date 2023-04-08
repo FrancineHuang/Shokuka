@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
 use App\Models\Recipe;
@@ -43,6 +44,15 @@ Route::prefix('recipe')->group(function () {
     Route::put('/update/{recipe_id}', [RecipeController::class, 'updateRecipe'])->name('recipe.update');//レシピの更新ルート(POST)
     Route::post('/destroy/{recipe_id}', [RecipeController::class, 'destroyRecipe'])->name('recipe.destroy'); //レシピの削除機能
 });
+
+/*
+ * コメントのルート
+ */
+Route::prefix('recipe/comment')->group(function() {
+    Route::post('/store/{recipe_id}', [CommentController::class, 'storeNewComment'])->name('comment.store');
+    Route::post('/destroy/{recipe_id}/{id}', [CommentController::class, 'destroyComment'])->name('comment.destroy');
+}
+);
 
 Route::get('/vue', function () {
     return view('vuetest');
