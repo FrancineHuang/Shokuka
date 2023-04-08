@@ -9,10 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    /**
-     * commentsとusersの関係を定義
-     */
-
+    protected $table = 'comments';
     protected $fillable = [
         'id',
         'user_id',
@@ -23,15 +20,24 @@ class Comment extends Model
         'deleted_at'
     ];
 
-    public function users() {
-        return $this->belongsTo(User::class);
+    /**
+     * commentsとusersの関係を定義
+     */
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function recipes() {
-        return $this->belongsTo(Recipe::class);
+    /**
+     * commentsとrecipesの関係を定義
+     */
+    public function recipe() {
+        return $this->belongsTo(Recipe::class, 'recipe_id', 'recipe');
     }
 
-    public function fetchCommentData($recipe_id) {
+    /**
+     * レシピIDに紐づいたコメントを全て取得する
+     */
+    public function getAllCommentsByRecipeId($recipe_id) {
         $result = $this->where('recipe_id', $recipe_id)->get();
 
         return $result;
