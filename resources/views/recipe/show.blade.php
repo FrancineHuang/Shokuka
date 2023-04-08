@@ -26,8 +26,8 @@
               <img class="object-cover object-center rounded" src="https://placehold.jp/800x600.png">
             </div>
             <div class="flex flex-col-reverse text-xs text-neutral-600 px-5">
-              <p>レシピ公開日：2023/1/1</p>
-              <p>レシピ更新日：2023/1/1</p>
+              <p>レシピ公開日：{{ $showRecipeData->created_at }}</p>
+              <p>レシピ更新日：{{ $showRecipeData->updated_at }}</p>
             </div>
           </div>
       <!--　レシピの紹介文　-->
@@ -93,29 +93,43 @@
         <div class="flex flex-row py-3">
           <h5 class="text-2xl font-bold text-neutral-900">コメント<span class="text-red-800">(1)</span></h5>
         </div>
+        <!--コメント送信-->
+        <form action="{{ route('comment.store', ['recipe_id' => $showRecipeData->id]) }}" method="POST" class="flex flex-row py-3">
+          @csrf
+          <input name="recipe_id" type="hidden" value="{{ $showRecipeData->id }}">
+          <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
+          <textarea rows="4" name="content" class="w-3/5 my-2 pl-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+          <button type="submit" class="mx-2 h-12 w-36 inline-flex cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded bg-red-800 px-3 py-2 text-sm font-medium text-neutral-50 transition hover:border-red-800 hover:bg-red-500 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-800">
+            返信</button>
+        </form>
     <!--　ユーザーアイコン・ニックネーム・コメントの日時　-->
+    @if($showCommentData)
+      @forelse($showCommentData as $comment)
         <div class="flex flex-col">
           <div class="flex flex-row py-3">
             <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/564x/af/66/f6/af66f6f05298dacf38f7badfc176080b.jpg" alt="user photo">
             <p class="pt-2 px-3 text-xs text-neutral-700">UserNickName</p>
-            <p class="pt-2 px-3 text-xs text-neutral-400">2023年1月1日</p>
+            <p class="pt-2 px-3 text-xs text-neutral-400">{{ $comment->created_at }}</p>
           </div>
           <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
-            テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト
+            {{ $comment->content }}
           </p>
           <div class="flex flex-row py-3">
             <a href="#" class="pl-7 pr-3 text-xs text-red-800 hover:text-red-600">返信</a>
             <!--ここに削除する際に条件付きが必要-->
-            <a href="#" class="px-3 text-xs text-red-800 hover:text-red-600">削除</a>
+            <form action="{{ route('comment.destroy', ['id' => $comment->id, 'recipe_id' => $showRecipeData->id]) }}" method="POST">
+              @csrf
+              <input type="hidden" name="recipe_id" value="{{ $showRecipeData->id }}">
+              <button type="submit" class="px-3 text-xs text-red-800 hover:text-red-600">削除</button>
+            </form>
           </div>
         </div>
-        <div class="flex flex-row py-3">
-          <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
-          <textarea rows="4" class="w-3/5 my-2 pl-8 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
-          <button type="button" class="mx-2 h-12 w-36 inline-flex cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded bg-red-800 px-3 py-2 text-sm font-medium text-neutral-50 transition hover:border-red-800 hover:bg-red-500 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-800">
-            返信</button>
-
-        </div>
+      @empty
+        <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
+          コメントがありません。
+        </p>
+      @endforelse
+    @endif
       </div>
     </div>
   </x-header-footer>
