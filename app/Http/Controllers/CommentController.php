@@ -6,10 +6,17 @@ use App\Models\Comment;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class CommentController extends Controller
 {
+
+    private $comment;
+
+    public function __construct() {
+        $this->comment = new Comment();
+    }
     /**
      * コメントを作成する
      */
@@ -29,24 +36,53 @@ class CommentController extends Controller
         $comment->recipe_id = $recipe->id;
         $comment->save();
 
-        return back();
+        return redirect()->back();
 
     }
 
     /**
-     * コメントを編集する
+     * コメントを表示する
      */
 
-    public function editComment() {
-        
-
+    public function showComment($recipe_id) {
+        $recipe = Recipe::find($recipe_id);
+        $showCommentData = $this->comment->getAllCommentsByRecipeId($recipe_id);
+        $recipe_id = $recipe->id;
+        return view('recipe.show', compact([
+            'recipe' => $recipe,
+            'showCommentData' => $showCommentData,
+            'recipe_id' => $recipe_id,
+        ]));
     }
 
     /**
      * コメントを更新する
      */
+    public function update() {
+
+    }
 
     /**
      * コメントを削除する
      */
+    public function destroyComment($recipe_id, $id) {
+        $comment = Comment::find($id);
+    
+        // Check if the comment exists
+        if (!$comment) {
+            return redirect()->back()->withErrors(['Comment not found.']);
+        }
+    
+        // Check if the user is authorized to delete the comment
+        if ($comment->user_id != Auth::id()) {
+            return redirect()->back()->withErrors(['You are not authorized to delete this comment.']);
+        }
+    
+        // Soft delete the comment
+        $comment->delete();
+    
+        // Redirect back to the previous page
+        return redirect()->back();
+    }
+
 }
