@@ -38,8 +38,8 @@ class Recipe extends Model
      * ユーザーモデルとのリレーション
      */
 
-    public function users() {
-        return $this->belongsTo(User::class);
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
     
     /**
@@ -61,7 +61,7 @@ class Recipe extends Model
      */
 
     public function comments() {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class, 'recipe_id', 'id');
     }
 
     /**
