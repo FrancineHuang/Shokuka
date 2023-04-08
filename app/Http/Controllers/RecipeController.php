@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Models\RecipeIngredient;
 use App\Models\RecipeStep;
 use App\Models\Step;
+use App\Models\Comment;
 use Exception;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Foundation\Auth\User;
@@ -22,11 +23,13 @@ class RecipeController extends Controller
     private $recipe;
     private $step;
     private $ingredient;
+    protected $comment;
 
-    public function __construct() {
+    public function __construct(Comment $comment) {
         $this->recipe = new Recipe();
         $this->step = new Step();
         $this->ingredient = new Ingredient();
+        $this->comment = $comment;
 
     }
 
@@ -129,7 +132,10 @@ class RecipeController extends Controller
             ->leftJoin('recipe_steps', 'steps.id', '=', 'recipe_steps.step_id')
             ->where('recipe_steps.recipe_id', '=', $recipe_id)
             ->get();
-            return view('recipe.show', compact('showRecipeData', 'showIngredientData', 'showStepData'));
+        
+        $showCommentData = $this->comment->getAllCommentsByRecipeId($recipe_id);
+
+        return view('recipe.show', compact('showRecipeData', 'showIngredientData', 'showStepData', 'showCommentData'));
     }
     
 
