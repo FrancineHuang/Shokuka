@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class Recipe extends Model
 {
+    use Searchable;
     use HasFactory;
     use SoftDeletes;
 
@@ -79,6 +81,14 @@ class Recipe extends Model
     public function getAllRecipesByUserId($user_id) {
         $result = $this->where('user_id', $user_id)->with('ingredients', 'steps')->get();
         return $result;
+    }
+
+    public function searchable()
+    {
+        return [
+            'title' => $this->title,
+            'introduction' => $this->introduction
+        ];
     }
 
 }
