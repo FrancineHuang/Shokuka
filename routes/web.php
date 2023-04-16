@@ -43,6 +43,7 @@ Route::prefix('recipe')->group(function () {
     Route::get('/edit/{recipe_id}', [RecipeController::class, 'editRecipe'])->name('recipe.edit'); //レシピの編集ルート（GET）
     Route::put('/update/{recipe_id}', [RecipeController::class, 'updateRecipe'])->name('recipe.update');//レシピの更新ルート(POST)
     Route::post('/destroy/{recipe_id}', [RecipeController::class, 'destroyRecipe'])->name('recipe.destroy'); //レシピの削除機能
+    Route::get('/search', [RecipeController::class, 'searchRecipe'])->name('recipe.search');
 });
 
 /*
