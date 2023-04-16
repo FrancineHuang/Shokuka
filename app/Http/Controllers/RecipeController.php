@@ -291,7 +291,7 @@ class RecipeController extends Controller
     ]);
 }
     
-
+    //レシピの投稿を削除する
     public function destroyRecipe(int $recipe_id) {
         $recipe = Recipe::find($recipe_id);
         $user = auth()->id();
@@ -318,4 +318,15 @@ class RecipeController extends Controller
             'message' => 'Recipe has been deleted successfully.'
         ]);
     }
+
+    public function searchRecipe(Request $request) {
+        if($request->keyword) {
+            $result = Recipe::where('title', 'LIKE', '%'.$request->keyword.'%')->latest()->paginate(15);
+            return view('recipe.search', compact('result'));
+        } else {
+            return redirect()->back()->with('message', 'Search Not Found');
+        }
+
+    }
+
 }
