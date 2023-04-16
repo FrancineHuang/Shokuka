@@ -145,7 +145,5 @@
       公開</button>
   </div>
   </form>
-  </main>
-
 </x-header-footer>
 <!--Mainはここまで-->
