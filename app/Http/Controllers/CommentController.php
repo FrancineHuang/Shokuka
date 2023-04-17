@@ -46,12 +46,16 @@ class CommentController extends Controller
 
     public function showComment($recipe_id) {
         $recipe = Recipe::find($recipe_id);
-        $showCommentData = $this->comment->getAllCommentsByRecipeId($recipe_id);
         $recipe_id = $recipe->id;
+
+        $showCommentData = $this->comment->getAllCommentsByRecipeId($recipe_id)->with('user')->first();
+        $showUserData = $showCommentData->user;
+
         return view('recipe.show', compact([
             'recipe' => $recipe,
-            'showCommentData' => $showCommentData,
             'recipe_id' => $recipe_id,
+            'showCommentData' => $showCommentData,
+            'showUserData' => $showUserData
         ]));
     }
 
