@@ -1,5 +1,9 @@
 <!--Mainはここから-->
-<x-header-footer>
+@php
+$userData = auth()->user();
+@endphp
+
+<x-header-footer :userData="$userData">
       <form action="{{ route('recipe.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
 

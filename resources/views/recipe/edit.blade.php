@@ -1,5 +1,9 @@
 <!--Mainはここから-->
-<x-header-footer>
+@php
+$userData = auth()->user();
+@endphp
+
+<x-header-footer :userData="$userData">
   <form action="{{ route('recipe.update', ['recipe_id' => $editRecipeData->id]) }}" method="POST" enctype="multipart/form-data">
   @csrf
   @method('PUT')

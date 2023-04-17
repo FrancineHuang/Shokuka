@@ -1,11 +1,15 @@
-<x-header-footer>
+@php
+$userData = auth()->user();
+@endphp
+
+<x-header-footer :userData="$userData">
     <!-- ● カード1：レシピ全体の表示部分-->
       <div class="flex justify-center">
         <div class="w-9/12 mt-36 mb-8 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
       <!--　ユーザーのニックネームとアイコン　-->
           <div class="flex flex-row py-3">
             <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
-            <p class="pt-2 px-3 text-xs text-neutral-700 font-bold">UserNickName</p>
+            <p class="pt-2 px-3 text-xs text-neutral-700 font-bold">{{ $showUserData->username }}</p>
           </div>
       <!--　レシピのタイトルといいねボタン（ハート）　-->
           <div class="flex flex-row py-3">
@@ -23,7 +27,7 @@
       <!--　レシピのカバー写真と作成・更新日　-->
           <div class="flex flex-row">
             <div class="mb-8 flex items-center justify-center max-w-4xl max-h-96 lg:max-w-lg md:w-1/2 w-5/6 md:mb-0">
-              <img class="object-cover object-center rounded" src="https://placehold.jp/800x600.png">
+              <img class="object-cover object-center rounded" src="{{ asset('storage/cover_image/' . $showRecipeData->cover_photo_path) }}">
             </div>
             <div class="flex flex-col-reverse text-xs text-neutral-600 px-5">
               <p>レシピ公開日：{{ $showRecipeData->created_at }}</p>
@@ -69,7 +73,7 @@
                 @endforeach
               </div>
               <div class="lg:max-w-md lg:w-2/12 md:w-1/3 w-1/4">
-                <a href="#"><img class="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600"></a>
+                <a href="#"><img class="object-cover object-center rounded" alt="hero" src="{{ asset('storage/step_image/' . $step->step_photo_path) }}"></a>
               </div>
             </div>
           </div>
@@ -108,14 +112,14 @@
         <div class="flex flex-col">
           <div class="flex flex-row py-3">
             <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/564x/af/66/f6/af66f6f05298dacf38f7badfc176080b.jpg" alt="user photo">
-            <p class="pt-2 px-3 text-xs text-neutral-700">UserNickName</p>
+            <p class="pt-2 px-3 text-xs text-neutral-700">{{ $comment->user->username }}</p>
             <p class="pt-2 px-3 text-xs text-neutral-400">{{ $comment->created_at }}</p>
           </div>
           <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
             {{ $comment->content }}
           </p>
           <div class="flex flex-row py-3">
-            <a href="#" class="pl-7 pr-3 text-xs text-red-800 hover:text-red-600">返信</a>
+            <button href="#" class="pl-7 pr-3 text-xs text-red-800 hover:text-red-600">返信</button>
             <!--ここに削除する際に条件付きが必要-->
             <form action="{{ route('comment.destroy', ['id' => $comment->id, 'recipe_id' => $showRecipeData->id]) }}" method="POST">
               @csrf
