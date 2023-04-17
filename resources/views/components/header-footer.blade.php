@@ -27,12 +27,12 @@
     <header class="fixed max-w-full top-0 left-0 right-0">
         <nav class="bg-red-800 border-gray-200 px-2 sm:px-4 py-2.5">
             <div class="container flex flex-wrap items-center justify-between mx-auto">
-            <a href="#" class="flex items-center">
+            <a href="{{ route('welcome') }}" class="flex items-center">
                 <span class="self-center text-xl font-semibold whitespace-nowrap text-neutral-50">Shokuka</span>
             </a>
         
             <div class="flex items-center md:order-3">
-            <button type="button" class="text-white bg-red-800 border-neutral-50 hover:bg-white hover:text-red-800 focus:ring-4 focus:outline-none focus:ring-neutral-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-5 md:mr-4">投稿する</button>
+            <a href="{{ route('recipe.create') }}" class="text-white bg-red-800 border-neutral-50 hover:bg-white hover:text-red-800 focus:ring-4 focus:outline-none focus:ring-neutral-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-5 md:mr-4">投稿する</a>
                 <button type="button" class="flex mr-3 text-sm bg-neutral-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Open user menu</span>
                 <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
@@ -41,21 +41,24 @@
                 <!-- Dropdown menu -->
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-neutral-100 rounded-lg shadow" id="user-dropdown">
                     <div class="px-4 py-3">
-                        <span class="block text-sm text-neutral-900">Bonnie Green</span>
-                        <span class="block text-sm font-medium text-neutral-500 truncate">name@flowbite.com</span>
+                        @if ($userData)
+                        <span class="block text-sm text-neutral-900">{{ $userData->nickname }}</span>    
+                        <span class="block text-sm font-medium text-neutral-500 truncate">{{ $userData->email }}</span>
+                        @endif
                     </div>
                     <ul class="py-2" aria-labelledby="user-menu-button">
                         <li>
-                            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Dashboard</a>
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">マイページ</a>
                         </li>
                         <li>
-                            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Settings</a>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">設定</a>
                         </li>
                         <li>
-                            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Earnings</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Sign out</a>
+                            <form action="{{ route('logout') }}" method="POST" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
+                                @csrf
+                                @method('POST')
+                                <button type="submit">ログアウト</button>
+                            </form>
                         </li>
                     </ul>
                 </div>
