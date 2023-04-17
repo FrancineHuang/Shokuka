@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Cache;
 
 class RecipeController extends Controller
 {
@@ -122,20 +123,16 @@ class RecipeController extends Controller
     }
 
     //レシピを表示させる
-    public function showRecipe($recipe_id) {
-        $showRecipeData = $this->recipe->fetchRecipeData($recipe_id);
-        $showIngredientData = $this->ingredient
-            ->leftJoin('recipe_ingredients', 'ingredients.id', '=', 'recipe_ingredients.ingredient_id')
-            ->where('recipe_ingredients.recipe_id', '=', $recipe_id)
-            ->get();
-        $showStepData = $this->step
-            ->leftJoin('recipe_steps', 'steps.id', '=', 'recipe_steps.step_id')
-            ->where('recipe_steps.recipe_id', '=', $recipe_id)
-            ->get();
-        
-        $showCommentData = $this->comment->getAllCommentsByRecipeId($recipe_id);
+    public function showRecipe($recipe_id)
+    {
+        $showRecipeData = Recipe::with('user', 'ingredients', 'steps', 'comments')->find($recipe_id);
+        $showUserData = $showRecipeData->user;
+        $showIngredientData = $showRecipeData->ingredients;
+        $showStepData = $showRecipeData->steps;
+        $showCommentData = $showRecipeData->comments;
 
-        return view('recipe.show', compact('showRecipeData', 'showIngredientData', 'showStepData', 'showCommentData'));
+        return view('recipe.show', compact('showRecipeData', 'showUserData', 'showIngredientData', 'showStepData', 'showCommentData'));
+
     }
     
 
@@ -276,7 +273,7 @@ class RecipeController extends Controller
                 
                     if ($request->hasFile('step_photo_path')) {
                         $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
-                        $stepImg = Image::make($request->file('cover_photo_path'))->fit(300, 400)->encode('jpg');
+                        $stepImg = Image::make($request->file('step_photo_path'))->fit(300, 400)->encode('jpg');
                         Storage::put('public/step_image/' . $filename, $stepImg);
                         $step->step_photo_path = $filename;
                     }
@@ -321,8 +318,10 @@ class RecipeController extends Controller
 
     public function searchRecipe(Request $request) {
         if($request->keyword) {
-            $result = Recipe::where('title', 'LIKE', '%'.$request->keyword.'%')->latest()->paginate(15);
-            return view('recipe.search', compact('result'));
+            $results = Recipe::where('title', 'LIKE', '%'.$request->keyword.'%')->latest()->paginate(15);
+            $showRecipeData = Recipe::with('user')->first();
+            $showUserData = $showRecipeData->user;
+            return view('recipe.search', compact('results', 'showUserData'));
         } else {
             return redirect()->back()->with('message', 'Search Not Found');
         }
