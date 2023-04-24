@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ __("Update your account's profile information.") }}
         </p>
     </header>
 
@@ -13,14 +13,25 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <x-input-label for="icon_path" value="アイコン写真をアップロード"/>
+            <label for="small-file-input" class="sr-only">Choose file</label>
+            <input type="file" name="icon_path" id="icon_path"
+                class="mt-1 block w-full border border-gray-200 shadow-sm rounded-md text-sm focus:z-10 focus:border-red-800 focus:ring-red-800 
+                file:bg-transparent file:border-0
+                file:bg-gray-100 file:mr-4
+                file:py-2 file:px-4">
+            <x-input-error class="mt-2" :messages="$errors->get('icon_path')" />
+        </div>
+
+        <div>
+            <x-input-label for="nickname" :value="__('Nickname')" />
+            <x-text-input id="nickname" name="nickname" type="text" class="mt-1 block w-full" :value="old('nickname', $user->nickname)" required autofocus autocomplete="nickname" />
+            <x-input-error class="mt-2" :messages="$errors->get('nickname')" />
         </div>
 
         <div>
@@ -45,6 +56,20 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="location" value="居住地" />
+            <x-text-input id="location" name="location" type="text" class="mt-1 block w-full" :value="old('location', $user->location)" required autofocus autocomplete="location" />
+            <x-input-error class="mt-2" :messages="$errors->get('location')" />
+        </div>
+
+        <div>
+            <x-input-label for="introduction" value="自己紹介" />
+            <textarea id="introduction" name="introduction" type="text"
+                class="mt-1 block w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-800 focus:border-red-800 p-2.5" :value="old('introduction', $user->introduction)"
+                required autofocus autocomplete="introduction" placeholder="自分のことについて200字以内で紹介してください"></textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('introduction')" />
         </div>
 
         <div class="flex items-center gap-4">
