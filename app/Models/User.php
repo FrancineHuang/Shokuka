@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -26,6 +27,12 @@ class User extends Authenticatable
         'location',
         'introduction'
     ];
+
+    protected function icon(): Attribute {
+        return Attribute::make(get: function($filename) {
+            return $filename ? '/storage/icon_image/' . $filename : '/default_avatar.jpeg';
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.
