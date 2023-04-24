@@ -1,3 +1,7 @@
+@php
+$userData = auth()->user();
+@endphp
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -35,7 +39,11 @@
             <a href="{{ route('recipe.create') }}" class="text-white bg-red-800 border-neutral-50 hover:bg-white hover:text-red-800 focus:ring-4 focus:outline-none focus:ring-neutral-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-5 md:mr-4">投稿する</a>
                 <button type="button" class="flex mr-3 text-sm bg-neutral-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Open user menu</span>
-                <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
+                @if ($userData->icon_path)
+                    <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $userData->icon_path) }}" alt="user photo">             
+                @else
+                    <img class="w-8 h-8 rounded-full" src="/default_avatar.jpeg" alt="user photo">
+                @endif
                 </button>
 
                 <!-- Dropdown menu -->
