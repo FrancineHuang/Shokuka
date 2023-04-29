@@ -28,7 +28,7 @@ $userData = auth()->user();
 </head>
 <body>
     <!--＊＊＊　共通Headerはここから　＊＊＊-->
-    <header class="fixed max-w-full top-0 left-0 right-0">
+    <header class="fixed max-w-full top-0 z-50 left-0 right-0">
         <nav class="bg-red-800 border-gray-200 px-2 sm:px-4 py-2.5">
             <div class="container flex flex-wrap items-center justify-between mx-auto">
             <a href="{{ route('welcome') }}" class="flex items-center">
@@ -101,7 +101,7 @@ $userData = auth()->user();
 
     <!--＊＊＊共通Footerはここから＊＊＊-->
     <footer class="bg-red-800">
-        <div class="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-12 sm:items-start">
+        <div class="mt-12 mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-12 sm:items-start">
             <div class="text-neutral-50 text-2xl">
                 <a href="#">Shokuka</a>
             </div>
