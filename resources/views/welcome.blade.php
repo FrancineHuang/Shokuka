@@ -13,15 +13,15 @@
     <!--＊＊＊　共通Headerはここから　＊＊＊-->
     <header>
 
-      <nav class="bg-red-800 border-gray-200 px-2 sm:px-4 py-2.5">
+      <nav class="bg-red-800 border-gray-200 flex items-center h-16 px-2 sm:px-4 py-2.5">
         <div class="container flex flex-wrap items-center justify-between mx-auto">
-        <a href="#" class="flex items-center">
+        <a href="{{ route('index') }}" class="flex items-center">
             <span class="self-center text-xl font-semibold whitespace-nowrap text-white">Shokuka</span>
         </a>
         @if (Route::has('login'))
                 <div class="">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="text-white bg-red-800 border-neutral-50 hover:bg-white hover:text-red-800 focus:ring-4 focus:outline-none focus:ring-neutral-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-5 md:mr-4">Dashboard</a>
+                        <a href="{{ url('/dashboard') }}" class="text-white bg-red-800 border-neutral-50 hover:bg-white hover:text-red-800 focus:ring-4 focus:outline-none focus:ring-neutral-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-5 md:mr-4">マイページ</a>
                     @else
                         <a href="{{ route('login') }}" class="text-white bg-red-800 border-neutral-50 hover:bg-white hover:text-red-800 focus:ring-4 focus:outline-none focus:ring-neutral-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-5 md:mr-4">ログイン</a>
 
