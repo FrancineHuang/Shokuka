@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\UserController;
 use App\Models\Recipe;
 use Illuminate\Support\Facades\Route;
 use Psy\Command\EditCommand;
@@ -29,6 +30,13 @@ Route::get('/index', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::prefix('/user')->group(function(){
+    Route::get('/{user_id}/show', [UserController::class, 'show'])->name('user.show');
+    Route::get('/{user_id}/likes')->name('user.likes');
+    route::get('/{user_id}/all_recipes', [UserController::class, 'showAllRecipes'])->name('user.all_recipes');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -58,6 +66,10 @@ Route::prefix('recipe/comment')->group(function() {
     Route::post('/destroy/{recipe_id}/{id}', [CommentController::class, 'destroyComment'])->name('comment.destroy');
 }
 );
+
+Route::get('/contact', function() {
+    return view('contact');
+})->name('contact');
 
 Route::get('/vue', function () {
     return view('vuetest');
