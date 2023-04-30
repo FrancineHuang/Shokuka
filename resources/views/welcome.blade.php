@@ -40,7 +40,7 @@
 
     <main>
     <!--Mainvisualはここから-->
-      <div class="relative flex flex-col-reverse py-16 lg:py-0 lg:flex-col">
+      <div class="relative flex flex-col-reverse pt-16 lg:py-0 lg:flex-col">
         <div class="w-full max-w-xl px-4 mx-auto md:px-0 lg:px-8 lg:py-20 lg:max-w-screen-xl">
           <div class="mb-0 lg:max-w-lg lg:pr-8 xl:pr-6">
             <h2 class="mb-5 font-sans text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:leading-none md:text-center">
@@ -55,10 +55,10 @@
             </p>
             <div class="mb-10 text-center md:mb-16 lg:mb-20">
               <a
-                href="/"
+                href="{{ route('index') }}"
                 class="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-red-800 hover:bg-red-700 focus:shadow-outline focus:outline-none"
               >
-                Learn more
+                もっと見る
               </a>
             </div>
             <div class="flex flex-col items-center">
@@ -117,24 +117,52 @@
     <!--Mainvisualはここまで-->
 
     <!--section #aboutはここから-->
-    <section id="access" class="my-24 pb-24 bg-gray-100">
-        <div class="md:flex justify-center">
-            <div class="">
-                <img class="w-72 rounded mx-auto pt-12" src="https://images.unsplash.com/photo-1487929054857-fad5245e7083?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="">
-            </div>
-            <div class="text-left lg:ml-8 px-8">
-                <p class="font-bold text-3xl pt-20 pb-5">食華とは？</p>
-                <p class="text-left mx-auto">什么是「食华」？</p>
-                <p class="mt-5 text-left mx-auto">
-                「食華」は、本場中華料理のレシピをかんたんに作成し、<br>
-                シェアできるサービスです。<br>
-                日本のスーパーで手軽に買える食材や調味料を手に入れ、<br>
-                日本にいる中華系の人でも、<br>
-                中華料理に興味を持っている人でも<br>
-                手軽に本場アレンジできます。</p>
-            </div>
-        </div>
+
+<section class="bg-white">
+  <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
+    <section
+      class="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6"
+    >
+      <img
+        alt="Night"
+        src="https://images.unsplash.com/photo-1609570324378-ec0c4c9b6ba8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+        class="absolute inset-0 h-full w-full object-cover opacity-80"
+      />
+
+      <div class="hidden lg:relative lg:block lg:p-12">
+        <h2 class="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
+          食華とは？
+        </h2>
+
+        <p class="mt-4 leading-relaxed text-white/90">
+          什么是「食华」？
+        </p>
+      </div>
     </section>
+
+    <main
+      aria-label="Main"
+      class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
+    >
+
+
+        <div class="mb-0 lg:max-w-lg lg:pr-8 xl:pr-6">
+          <p class="mb-5 leading-relaxed text-base text-gray-700 md:text-lg md:text-center">
+            「食華」は、<br>
+            本場中華料理のレシピをかんたんに作成し、<br>
+            シェアできるサービスです。<br>
+            日本のスーパーで<br>
+            手軽に買える食材や調味料を手に入れ、<br>
+            日本にいる中華系の人でも、<br>
+            中華料理に興味を持っている人でも<br>
+            手軽に本場アレンジできます。
+          </p>
+
+      </div>
+    </main>
+  </div>
+</section>
+
     <!--section #aboutはここまで-->
     </main>
 
@@ -142,10 +170,10 @@
     <footer class="bg-red-800">
         <div class="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-12 sm:items-start">
           <div class="text-neutral-50 text-2xl">
-            <a href="#">Shokuka</a>
+            <a href="{{ route('welcome') }}">Shokuka</a>
           </div>
           <nav class="mt-6 flex items-center space-x-3">
-            <a href="#" class="rounded-lg bg-gray-100 p-1 text-gray-500 transition hover:bg-gray-200">
+            <a href="https://twitter.com/Francine_webdev" class="rounded-lg bg-gray-100 p-1 text-gray-500 transition hover:bg-gray-200">
               <svg class="h-6 w-6" viewBox="0 0 512 512">
                 <path
                   fill="currentColor"
