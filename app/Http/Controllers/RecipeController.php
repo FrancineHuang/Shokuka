@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ingredient;
+use App\Models\Like;
 use App\Models\Recipe;
 use App\Models\RecipeIngredient;
 use App\Models\RecipeStep;
@@ -116,10 +117,7 @@ class RecipeController extends Controller
         $recipe_ingredient->timestamps = false;
         $recipe_ingredient->save();
 
-        return response()->json([
-            'message' => 'Recipe created successfully.',
-            'data' => $recipe
-        ], 201);
+        return redirect()->route('recipe.show', ['recipe_id' => $recipe->id]);
     }
 
     //レシピを表示させる
@@ -130,8 +128,9 @@ class RecipeController extends Controller
         $showIngredientData = $showRecipeData->ingredients;
         $showStepData = $showRecipeData->steps;
         $showCommentData = $showRecipeData->comments;
+        $like = Like::where('recipe_id', $recipe_id)->where('user_id', auth()->user()->id)->first();
 
-        return view('recipe.show', compact('showRecipeData', 'showUserData', 'showIngredientData', 'showStepData', 'showCommentData'));
+        return view('recipe.show', compact('showRecipeData', 'showUserData', 'showIngredientData', 'showStepData', 'showCommentData', 'like'));
 
     }
     
@@ -283,9 +282,7 @@ class RecipeController extends Controller
             }
         }
 
-    return response()->json([
-        'message' => 'Recipe has been updated successfully.'
-    ]);
+        return redirect()->route('recipe.show', ['recipe_id' => $recipe->id]);
 }
     
     //レシピの投稿を削除する
