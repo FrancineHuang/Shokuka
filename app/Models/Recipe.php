@@ -91,4 +91,12 @@ class Recipe extends Model
         ];
     }
 
+    /**
+     * recipesとlikesのリーレーションを定義する
+     */
+
+    public function likes() {
+        return $this->hasMany(Like::class, 'recipe_id');
+    }
+
 }

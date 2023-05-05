@@ -69,5 +69,11 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    /**
+     * usersとlikesの関係を定義
+     */
 
+    public function likes() {
+        return $this->hasMany(Like::class);
+    }
 }
