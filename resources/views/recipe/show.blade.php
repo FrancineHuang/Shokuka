@@ -8,21 +8,18 @@ $userData = auth()->user();
         <div class="w-9/12 mt-36 mb-8 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
       <!--　ユーザーのニックネームとアイコン　-->
           <div class="flex flex-row py-3">
-            <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
+            @if($showUserData->icon_path)
+            <a href="{{ route('user.show', ['user_id' => $showRecipeData->user_id]) }}">
+              <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $showUserData->icon_path) }}" alt="user photo">
+            </a>
+            @else
+            <img class="w-8 h-8 rounded-full" src="/default_avatar.jpeg" alt="user photo">
+            @endif
             <p class="pt-2 px-3 text-xs text-neutral-700 font-bold">{{ $showUserData->username }}</p>
           </div>
       <!--　レシピのタイトルといいねボタン（ハート）　-->
           <div class="flex flex-row py-3">
             <h5 class="mb-2 text-2xl font-bold text-neutral-900">{{ $showRecipeData->title }}</h5>
-            <!-- 「いいね」をした場合はfa-solidで書き換える（ここに後で実装）-->
-            <i class="fa-regular fa-heart text-red-800 px-3 py-1"></i>
-            <div class="text-right">
-              <a href="{{ route('recipe.edit', ['recipe_id' => $showRecipeData->id]) }}" class="fa-regular fa-pen-to-square text-red-800 px-3 py-1"></a>
-              <form action="{{ route('recipe.destroy', ['recipe_id' => $showRecipeData->id]) }}" method="POST">
-                @csrf
-              <button onclick="return comfirm('本当に削除してもよろしいでしょうか？')" class="fas fa-trash text-red-800 px-3 py-1"></button>
-              </form>
-            </div>
           </div>
       <!--　レシピのカバー写真と作成・更新日　-->
           <div class="flex flex-row">
@@ -34,10 +31,31 @@ $userData = auth()->user();
               <p>レシピ更新日：{{ $showRecipeData->updated_at }}</p>
             </div>
           </div>
+      <!-- ボタングループ -->
+      <div class="inline-flex rounded-md shadow-sm my-3">
+        @if($like)
+        <a href="{{route('recipe.unlike',['recipe_id' => $showRecipeData->id])}}" aria-current="page" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
+          <i class="fa-solid fa-heart"></i> お気に入り（{{$userData->likes->count()}}）
+        </a>
+        @else
+        <a href="{{route('recipe.like',['recipe_id' => $showRecipeData->id])}}" aria-current="page" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
+          <i class="fa-regular fa-heart"></i> お気に入り（{{$userData->likes->count()}}）
+        </a>
+        @endif
+        <a href="{{ route('recipe.edit', ['recipe_id' => $showRecipeData->id]) }}" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
+          編集する
+        </a>
+        <form action="{{ route('recipe.destroy', ['recipe_id' => $showRecipeData->id]) }}" method="POST">
+          @csrf
+          <button onclick="return comfirm('本当に削除してもよろしいでしょうか？')" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border border-gray-200 rounded-r-md hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
+            削除する
+          </button>
+        </form>
+      </div>
       <!--　レシピの紹介文　-->
           <div class="flex flex-col py-3">
             <i class="fa-solid fa-quote-left text-red-800 text-1xl py-3"></i> <!-- left quote -->
-            <p class="flex items-center justify-center text-base text-neutral-900 py-1 max-w-4xl">
+            <p class="flex items-center text-base text-neutral-900 py-1 max-w-4xl">
               {{ $showRecipeData->introduction }}
             </p>
             <i class="fa-solid fa-quote-right text-red-800 text-1xl py-3 text-right"></i> <!-- right quote -->
@@ -112,10 +130,10 @@ $userData = auth()->user();
         <div class="flex flex-col">
           <div class="flex flex-row py-3">
             <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/564x/af/66/f6/af66f6f05298dacf38f7badfc176080b.jpg" alt="user photo">
-            <p class="pt-2 px-3 text-xs text-neutral-700">{{ $comment->user->username }}</p>
-            <p class="pt-2 px-3 text-xs text-neutral-400">{{ $comment->created_at }}</p>
+            <p class="pt-2 px-3 text-xs text-left text-neutral-700">{{ $comment->user->username }}</p>
+            <p class="pt-2 px-3 text-xs text-left text-neutral-400">{{ $comment->created_at }}</p>
           </div>
-          <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
+          <p class="flex items-center text-base text-left text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
             {{ $comment->content }}
           </p>
           <div class="flex flex-row py-3">
