@@ -4,7 +4,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\UserController;
-use App\Models\Recipe;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MyPageController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Psy\Command\EditCommand;
 
@@ -27,14 +29,12 @@ Route::get('/index', function () {
     return view('index');
 })->name('index');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [MyPageController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::prefix('/user')->group(function(){
     Route::get('/{user_id}/show', [UserController::class, 'show'])->name('user.show');
-    Route::get('/{user_id}/likes')->name('user.likes');
+    Route::get('/{user_id}/likes', [UserController::class, 'showUserLikes'])->name('user.likes');
     route::get('/{user_id}/all_recipes', [UserController::class, 'showAllRecipes'])->name('user.all_recipes');
 });
 
@@ -59,6 +59,12 @@ Route::prefix('recipe')->group(function () {
 });
 
 /*
+ * 「いいね」ボタン
+ */
+Route::get('recipe/like/{recipe_id}', [LikeController::class, 'like'])->name('recipe.like'); //「いいね」をする
+Route::get('recipe/unlike/{recipe_id}', [LikeController::class, 'unlike'])->name('recipe.unlike'); //「いいね」を解除する
+
+/*
  * コメントのルート
  */
 Route::prefix('recipe/comment')->group(function() {
@@ -67,6 +73,9 @@ Route::prefix('recipe/comment')->group(function() {
 }
 );
 
+/*
+ * お問い合わせページ
+ */
 Route::get('/contact', function() {
     return view('contact');
 })->name('contact');
