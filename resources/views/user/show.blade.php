@@ -1,5 +1,6 @@
 @php
 $userData = auth()->user();
+$showRecipeData = $userData->recipes()->latest()->limit(3)->get();
 @endphp
 
 <x-header-footer :userData="$userData">
@@ -46,62 +47,56 @@ $userData = auth()->user();
     {{--カード2: 全てのレシピ--}}
     {{--タイトル--}}
     <div class="flex justify-between w-10/12 my-5 lg:pl-40">
-        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">レシピ（10）</h4>
-        <div class="flex justify-end text-neutral-700 hover:text-neutral-500">
+        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">レシピ（{{ $userData->recipes->count() }}）</h4>
+        <a href="{{route('user.all_recipes', ['user_id' => $userData->id])}}" class="flex justify-end text-neutral-700 hover:text-neutral-500">
             <p class="text-base text-right pr-1">もっと見る</p>
             <i class="fa-solid fa-chevron-right text-sm  text-center pr-1"></i>
-        </div>
+        </a>
     </div>
     {{--写真付きカード--}}
+    @if($showRecipeData)
+    @forelse($showRecipeData as $recipe)
     <div class="flex justify-center my-1">
         <div class="w-9/12 my-3 flex flex-row bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="https://thewoksoflife.com/wp-content/uploads/2021/04/beef-onion-stir-fry-12.jpg">
+            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="{{ asset('storage/cover_image/' . $recipe->cover_photo_path) }}">
             <div class="mb-8 ml-8">
-                <div class="text-gray-900 font-bold text-xl mb-2">Can coffee make you a better developer?</div>
-                <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
-                </div>
+                <a href="{{ route('recipe.show', ['recipe_id' => $recipe->id]) }}" class="text-gray-900 font-bold text-xl mb-2">{{ $recipe->title }}</a>
+                <p class="py-1 text-gray-700 text-base">{{ $recipe->introduction }}</p>
             </div>
         </div>
     </div>
-    <div class="flex justify-center my-1">
-        <div class="w-9/12 my-3 flex flex-row bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="https://thewoksoflife.com/wp-content/uploads/2021/04/beef-onion-stir-fry-12.jpg">
-            <div class="mb-8 ml-8">
-                <div class="text-gray-900 font-bold text-xl mb-2">Can coffee make you a better developer?</div>
-                <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    @empty
+    <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
+        レシピがありません。
+    </p>
+    @endforelse
+    @endif
+
 
     {{--カード3: お気に入りレシピ--}}
     {{--タイトル--}}
+@if($likedRecipes->count() > 0)
     <div class="flex justify-between w-10/12 my-5 lg:pl-40">
-        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">お気に入り（10）</h4>
-        <div class="flex justify-end text-neutral-700 hover:text-neutral-500">
+        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">お気に入り（{{ $likedRecipes->count() }}）</h4>
+        <a href="{{route('user.likes', ['user_id' => $userData->id])}}" class="flex justify-end text-neutral-700 hover:text-neutral-500">
             <p class="text-base text-right pr-1">もっと見る</p>
             <i class="fa-solid fa-chevron-right text-sm  text-center pr-1"></i>
-        </div>
+        </a>
     </div>
-    {{--写真付きカード--}}
+    @foreach($likedRecipes as $like)
     <div class="flex justify-center my-1">
         <div class="w-9/12 my-3 flex flex-row bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="https://thewoksoflife.com/wp-content/uploads/2021/04/beef-onion-stir-fry-12.jpg">
+            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="{{ asset('storage/cover_image/' . $like->recipe->cover_photo_path)}}">
             <div class="mb-8 ml-8">
-                <div class="text-gray-900 font-bold text-xl mb-2">Can coffee make you a better developer?</div>
-                <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
-                </div>
+                <div class="text-gray-900 font-bold text-xl mb-2">{{ $like->recipe->title }}</div>
+                <p class="text-gray-700 text-base">{{ $like->recipe->introduction }}</p>
             </div>
         </div>
     </div>
-    <div class="flex justify-center my-1">
-        <div class="w-9/12 my-3 flex flex-row bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="https://thewoksoflife.com/wp-content/uploads/2021/04/beef-onion-stir-fry-12.jpg">
-            <div class="mb-8 ml-8">
-                <div class="text-gray-900 font-bold text-xl mb-2">Can coffee make you a better developer?</div>
-                <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endforeach
+@else
+    <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
+        レシピがありません。
+    </p>
+@endif
 </x-header-footer>
