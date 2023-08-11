@@ -4,41 +4,14 @@
         <div id="default-carousel" class="w-9/12 mt-36 z-0 relative " data-carousel="slide">
             <!-- Carousel wrapper -->
             <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
-                <!-- Item 1 -->
+                @foreach ($recipes as $recipe)
                 <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://thewoksoflife.com/wp-content/uploads/2017/10/dry-fried-string-beans-2.jpg" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                    <img src="{{ asset('storage/cover_image/'.$recipe->cover_photo_path) }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="{{ $recipe->title }}">
                     <div class="absolute inset-x-0 bottom-1 z-20 w-96 mb-10 p-4 font-light text-sm text-center tracking-widest leading-snug bg-gray-300 text-neutral-50 bg-opacity-50">
-                        タイトル
+                        {{ $recipe->title }}
                     </div>
                 </div>
-                <!-- Item 2 -->
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://thewoksoflife.com/wp-content/uploads/2015/06/smashed-asian-cucumber-salad-7.jpg" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    <div class="absolute inset-x-0 bottom-1 z-20 w-96 mb-10 p-4 font-light text-sm text-center tracking-widest leading-snug bg-gray-300 text-neutral-50 bg-opacity-50">
-                        タイトル
-                    </div>
-                </div>
-                <!-- Item 3 -->
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://thewoksoflife.com/wp-content/uploads/2021/07/mushrooms-glass-noodles-11.jpg" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    <div class="absolute inset-x-0 bottom-1 z-20 w-96 mb-10 p-4 font-light text-sm text-center tracking-widest leading-snug bg-gray-300 text-neutral-50 bg-opacity-50">
-                        タイトル
-                    </div>
-                </div>
-                <!-- Item 4 -->
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://thewoksoflife.com/wp-content/uploads/2021/07/mushrooms-glass-noodles-11.jpg" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    <div class="absolute inset-x-0 bottom-1 z-20 w-96 mb-10 p-4 font-light text-sm text-center tracking-widest leading-snug bg-gray-300 text-neutral-50 bg-opacity-50">
-                        タイトル
-                    </div>
-                </div>
-                <!-- Item 5 -->
-                <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img src="https://thewoksoflife.com/wp-content/uploads/2021/08/Stir-fried-cucumbers-wood-ear-bean-threads-11.jpg" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-                    <div class="absolute inset-x-0 bottom-1 z-20 w-96 mb-10 p-4 font-light text-sm text-center tracking-widest leading-snug bg-gray-300 text-neutral-50 bg-opacity-50">
-                        タイトル
-                    </div>
-                </div>
+                @endforeach
             </div>
             <!-- Slider indicators -->
             <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">

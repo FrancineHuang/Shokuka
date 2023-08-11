@@ -11,6 +11,11 @@ $userData = auth()->user();
       <div class="flex justify-center">
 
         <div class="w-9/12 mt-36 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+          @if ($errors->any())
+            @foreach ($errors->all() as $error)
+              <x-alert :alert="$error"></x-alert>
+            @endforeach
+          @endif
           <h5 class="mb-2 text-1xl font-bold text-neutral-900">レシピを作成する</h5>
           <p class="mb-2 text-sm text-neutral-500 sm:text-base">クリックして料理の写真を載せる。</p>
           <p class="mb-5 text-xs text-red-800 sm:text-sm">*レシピの完成写真をのせましょう。オリジナルでないものや料理以外のものはご遠慮ください。</p>
@@ -63,7 +68,7 @@ $userData = auth()->user();
       </div>
 
       <!-- ● カード2 レシピを作成する：材料・分量-->
-      <div class="flex justify-center">
+      <div id="ingredients-container" class="flex justify-center">
         <div class="w-9/12 my-10 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
           <div class="my-3">
             <p class="mb-2 text-sm font-bold text-neutral-900 sm:text-base">3. 材料・分量<span class="text-red-800">(＊必須)</span></p>
@@ -74,54 +79,57 @@ $userData = auth()->user();
             <p class="mx-3 my-5 text-xs text-neutral-500 sm:text-sm">例）2人分</p>
             </label>
           </div>
-          <div>
+          <div id="recipe-ingredients">
             <div class="my-6 flex flex-row items-center justify-center">
               <label for="material" class="w-2/5 mx-3 my-2 bg-red-200 text-neutral-900 text-sm text-center rounded-lg block p-2.5">材料・調味料</label>
               <label for="quantity" class="w-2/5 mx-3 my-2 bg-red-200 text-neutral-900 text-sm text-center rounded-lg block p-2.5">分量</label>
             </div>
             <div class="my-5 flex items-center justify-center">
               <i class="fas fa-bars text-red-800"></i>
-              <input type="text" name="material" class="w-2/5 mx-3 my-1 bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="例）豚肉">
-              <input type="text" name="quantity" class="w-2/5 mx-3 my-1 bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="例）300g">
-              <i class="fas fa-times text-red-800"></i>
+              <input type="text" name="ingredients[0][material]" class="w-2/5 mx-3 my-1 bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="例）豚肉">
+              <input type="text" name="ingredients[0][quantity]" class="w-2/5 mx-3 my-1 bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" placeholder="例）300g">
+              <a href="javascript:void(0)" class="delete-ingredient"><i class="fas fa-times text-red-800"></i></a>
             </div>
           </div>
           <div>
             {{-- ここに無限追加機能を実装する->後で調べてみる --}}
-            <a href="" class="px-24 my-3 text-xs text-neutral-800 sm:text-sm"><i class="fas fa-plus pr-1 text-red-800"></i>行を追加する</a>
+            <a href="javascript:void(0)" class="add-ingredient px-24 my-3 text-xs text-neutral-800 sm:text-sm"><i class="fas fa-plus pr-1 text-red-800"></i>行を追加する</a>
           </div>
         </div>
       </div>
 
       <!-- ● カード3 レシピを作成する：作り方-->
-      <div class="flex justify-center">
+      <div id="steps-container" class="flex flex-col items-center">
         <div class="w-9/12 my-5 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
           <div class="my-3">
             <p class="mb-2 text-sm font-bold text-neutral-900 sm:text-base">4.作り方<span class="text-red-800">(＊必須)</span></p>
             <p class="my-3 text-xs text-neutral-800 sm:text-sm">お料理初心者の方でもわかるよう、下ごしらえの方法や調理手順を書いてください。</p>
           </div>
 
-          <div class="container mx-auto flex px-5 py-10 md:flex-row flex-col items-center">
-            <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-              <label for="content" class="sm:text-xl text-2xl font-bold mb-4 text-red-800">Step 1 </label>
-              <textarea name="content" rows="4" class="w-full my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"></textarea>
-              <div class="flex justify-center">
-                <button class="inline-flex text-white bg-red-800 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg">追加</button>
-                <button class="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">削除</button>
+          <div id="recipe-steps">
+            <div id="recipe-steps" class="container mx-auto flex flex-row px-5 py-10 md:flex-row items-center">
+              <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
+                  <!--テキスト入力欄-->
+                  <label for="content" class="sm:text-xl text-2xl font-bold mb-4 text-red-800">Step 1 </label>
+                  <textarea name="steps[0][content]" id="content" rows="4" class="w-full my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"></textarea>
+          
+                  <!--ステップ写真のアップロード-->
+                  <label class="flex w-1/5 cursor-pointer appearance-none justify-center rounded-md border border-dashed border-gray-300 bg-white px-3 py-6 text-sm transition hover:border-gray-400 focus:border-solid focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75" tabindex="0">
+                      <span for="photo-dropbox" class="flex items-center space-x-2">
+                      <svg class="h-6 w-6 stroke-gray-400" viewBox="0 0 256 256">
+                          <path d="M96 208H72A56 56 0 0172 96a57.5 57.5.0 0113.9 1.7" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></path>
+                          <path d="M80 128a80 80 0 11144 48" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></path>
+                          <polyline points="118.1 161.9 152 128 185.9 161.9" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></polyline>
+                          <line x1="152" y1="208" x2="152" y2="128" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg>
+                          <span class="text-xs font-medium text-gray-600">クリックして写真をアップロード</span>
+                      <input name="steps[0][step_photo_path]" id="step_photo_path" type="file" class="sr-only">
+                  </span>
+                </label>
+                <div class="flex justify-center my-3">
+                  <button type="button" class="add-step inline-flex text-white bg-red-800 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg">追加</button>
+                </div>
               </div>
-            </div>
-
-            <!--ステップ写真のアップロード-->
-            <label class="flex w-1/5 cursor-pointer appearance-none justify-center rounded-md border border-dashed border-gray-300 bg-white px-3 py-6 text-sm transition hover:border-gray-400 focus:border-solid focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75" tabindex="0">
-              <span for="photo-dropbox" class="flex items-center space-x-2">
-              <svg class="h-6 w-6 stroke-gray-400" viewBox="0 0 256 256">
-                <path d="M96 208H72A56 56 0 0172 96a57.5 57.5.0 0113.9 1.7" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></path>
-                <path d="M80 128a80 80 0 11144 48" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></path>
-                <polyline points="118.1 161.9 152 128 185.9 161.9" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></polyline>
-                <line x1="152" y1="208" x2="152" y2="128" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg>
-                <span class="text-xs font-medium text-gray-600">クリックして写真をアップロード</span>
-              <input name="step_photo_path" id="photo-dropbox" type="file" class="sr-only">
-            </label>
+              </div>
           </div>
         </div>
       </div>
@@ -147,5 +155,6 @@ $userData = auth()->user();
       </form>
       </main>
 
+      @vite(['resources/js/dynamicSteps.js','resources/js/dynamicIngredients.js'])
 </x-header-footer>
     <!--Mainはここまで-->

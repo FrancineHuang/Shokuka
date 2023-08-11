@@ -6,6 +6,8 @@ use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\FollowController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Psy\Command\EditCommand;
@@ -25,9 +27,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/index', function () {
-    return view('index');
-})->name('index');
+Route::get('/index', [HomeController::class, 'index'])->name('index');
 
 Route::get('/dashboard', [MyPageController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -35,7 +35,9 @@ Route::get('/dashboard', [MyPageController::class, 'show'])->middleware(['auth',
 Route::prefix('/user')->group(function(){
     Route::get('/{user_id}/show', [UserController::class, 'show'])->name('user.show');
     Route::get('/{user_id}/likes', [UserController::class, 'showUserLikes'])->name('user.likes');
-    route::get('/{user_id}/all_recipes', [UserController::class, 'showAllRecipes'])->name('user.all_recipes');
+    Route::get('/{user_id}/all_recipes', [UserController::class, 'showAllRecipes'])->name('user.all_recipes');
+    Route::post('/follow/{user_id}', [FollowController::class, 'follow'])->middleware(['auth', 'verified'])->name('user.follow');
+    Route::post('/unfollow/{user_id}', [FollowController::class, 'unfollow'])->middleware(['auth', 'verified'])->name('user.unfollow');
 });
 
 Route::middleware('auth')->group(function () {

@@ -6,7 +6,7 @@ $userData = auth()->user();
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>食華 - 本場の中華料理を探そう</title>
+    <title>食華 - 本場の中華レシピを探そう</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="中国人が作る本場中華料理のレシピシェアサービス。本場中華を作りたいならココ！作り方検索できる。本場中華料理が大好きな人は自分のレシピを作成し、公開できる。">

@@ -7,11 +7,15 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-debugbar": "^3.8",
+        "dyrynda/laravel-cascade-soft-deletes": "^4.2",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.7",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
+        "laravel/scout": "^10.0",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.2"
+        "laravel/ui": "^4.2",
+        "symfony/filesystem": "^6.3"
     },
     "require-dev": {
         "askdkc/breezejp": "^1.5",

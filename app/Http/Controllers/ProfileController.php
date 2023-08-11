@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -36,7 +37,8 @@ class ProfileController extends Controller
         if ($request->hasFile('icon_path')) {
             $filename = 'icon-' . $user->id . '-' . uniqid() . '.jpg';
             $iconImg = Image::make($request->file('icon_path'))->fit(300, 300)->encode('jpg');
-            Storage::put('public/icon_image/' . $filename, $iconImg);
+            $path = 'icon_image/' . $filename;
+            Storage::disk('public')->put($path, $iconImg);
             $validated['icon_path'] = $filename;
         }
     

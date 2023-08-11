@@ -99,4 +99,12 @@ class Recipe extends Model
         return $this->hasMany(Like::class, 'recipe_id');
     }
 
+    /**
+     * indexで最新のデータを取得する
+     */
+    public static function getLatestRecipes() {
+        $latest = self::orderBy('created_at', 'desc')->take(5)->get();
+        return $latest;
+    }
+
 }

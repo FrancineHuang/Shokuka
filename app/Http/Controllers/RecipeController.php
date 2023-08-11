@@ -56,7 +56,15 @@ class RecipeController extends Controller
             //'steps' => ['required', 'array'],
             'steps.*.content' => ['required', 'string', 'max:255'],
             'steps.*.step_photo_path' => ['nullable','image','max:5120'],
-
+        ],[
+            'cover_photo_path.required' => '写真が正常にアップロードされませんでした。',
+            'title.required' => 'タイトルを入力してください。',
+            'introduction.required' => '紹介文を入力してください',
+            'person.required' => '人数分を入力してください',
+            'tip.required' => 'コツ・ポイントを入力してください',
+            'ingredients.*.material.required' => '材料を入力してください',
+            'ingredients.*.quantity.required' => '分量を入力してください',
+            'steps.*.content.required' => 'ステップの説明を入力してください'
         ]);
 
 
@@ -73,51 +81,95 @@ class RecipeController extends Controller
         // レシピのカバー写真を保存する
         $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
         $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
-        Storage::put('public/cover_image/' . $filename, $coverImg);
+        $saveCoverImg = Storage::put('cover_image/' . $filename, $coverImg);
+        
+        if(!$saveCoverImg) {
+            return back()->with('uploadError', '画像のアップロードに失敗しました。もう一度お試しください。');
+        }
+
         $recipe->cover_photo_path = $filename;
 
         // レシピを保存
         $recipe->save();
 
-        // Ingredient(材料)を保存する
-        $ingredient = new Ingredient();
-        $ingredient->material = strip_tags($request->input('material'));
-        $ingredient->quantity = strip_tags($request->input('quantity'));
-        $ingredient->recipe_id = $recipe->id;
-        $ingredient->user_id = $user->id;
-        $ingredient->save();
+        // 複数のIngredient(材料)を保存する
+        $ingredientsData = $request->input('ingredients');
+        if($ingredientsData != null) {
+            foreach($ingredientsData as $ingredientData){
+                $ingredient = new Ingredient();
+                $ingredient->material = strip_tags($ingredientData['material']);
+                $ingredient->quantity = strip_tags($ingredientData['quantity']);
+                $ingredient->recipe_id = $recipe->id;
+                $ingredient->user_id = $user->id;
+                $ingredient->save();
+            }
+        }
+            
+            // recipe_ingredient→中間テーブルの紐つけ
+            $recipe_ingredient = new RecipeIngredient();
+            $recipe_ingredient->recipe_id = $recipe->id;
+            $recipe_ingredient->ingredient_id = $ingredient->id;
+            $recipe_ingredient->timestamps = false;
+            $recipe_ingredient->save();
         
 
-        // Step（作り方ステップ）の内容を保存する
-        $step = new Step();
-        $step->content = strip_tags($request->input('content'));
-        $step->user_id = $user->id;
-        $step->recipe_id = $recipe->id;
+        // 複数のStep（作り方ステップ）の内容を保存する
+        $stepsData = $request->all()['steps'];
 
-        // Step（作り方ステップ）の写真を保存する
-        $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
-        $stepImg = Image::make($request->file('step_photo_path'))->fit(300, 300)->encode('jpg');
-        Storage::put('public/step_image/' . $filename, $stepImg);
-        $step->step_photo_path = $filename;
-        
-        // Step（作り方ステップ）を保存する
-        $step->save();
+        if ($stepsData != null) {
+            foreach($stepsData as $stepData) {
+                $step = new Step();
+                $step->content = strip_tags($stepData['content']);
+                $step->user_id = $user->id;
+                $step->recipe_id = $recipe->id;
+    
+                //ステップ写真がnullではない場合だったら、アップロードする
+                if(!empty($stepData['step_photo_path'])) {
+                    // Step（作り方ステップ）の写真を保存する
+                    $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
 
-        // recipe_step→中間テーブルの紐つけ
-        $recipe_step = new RecipeStep();
-        $recipe_step->recipe_id = $recipe->id;
-        $recipe_step->step_id = $step->id;
-        $recipe_step->timestamps = false;
-        $recipe_step->save();
+                    try{
+                        $stepImg =  Image::make($stepData['step_photo_path'])->fit(300, 300)->encode('jpg');
+                    } catch(\Exception $e) {
+                        Log::error('Image processing failed', [
+                            'error' => $e->getMessage(),
+                        ]);
+                        throw $e;
+                    }
 
-        // recipe_ingredient→中間テーブルの紐つけ
-        $recipe_ingredient = new RecipeIngredient();
-        $recipe_ingredient->recipe_id = $recipe->id;
-        $recipe_ingredient->ingredient_id = $ingredient->id;
-        $recipe_ingredient->timestamps = false;
-        $recipe_ingredient->save();
+                    $isStored = Storage::put('step_image/' . $filename, (string) $stepImg);
+                    if(!$isStored) {
+                        Log::error('Image storing failed', [
+                            'filename' => $filename
+                        ]);
+                    }
 
-        return redirect()->route('recipe.show', ['recipe_id' => $recipe->id]);
+                    $step->step_photo_path = $filename;
+                }
+
+                // Step（作り方ステップ）を保存する
+                $step->save();
+
+                /*
+                //ステップ写真がnullではない場合だったら、アップロードする
+                if(!empty($stepData['step_photo_path'])) {
+                    // Step（作り方ステップ）の写真を保存する
+                    $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
+                    $stepImg = Image::make($stepData['step_photo_path'])->fit(300, 300)->encode('jpg');
+                    Storage::put('step_image/' . $filename, $stepImg);
+                    $step->step_photo_path = $filename;
+                }*/
+                
+                // recipe_step→中間テーブルの紐つけ
+                $recipe_step = new RecipeStep();
+                $recipe_step->recipe_id = $recipe->id;
+                $recipe_step->step_id = $step->id;
+                $recipe_step->timestamps = false;
+                $recipe_step->save();
+            }
+        }
+
+        return redirect()->route('recipe.show', ['recipe_id' => $recipe->id])->with('message', 'レシピが投稿されました！');
     }
 
     //レシピを表示させる
@@ -169,17 +221,26 @@ class RecipeController extends Controller
             'steps.*.content' => ['sometimes', 'string', 'max:255'],
             'steps.*.step_photo_path' => ['nullable','image','max:5120'],
     
+        ],[
+            'cover_photo_path.required' => '写真が正常にアップロードされませんでした。',
+            'title.required' => 'タイトルを入力してください。',
+            'introduction.required' => '紹介文を入力してください',
+            'person.required' => '人数分を入力してください',
+            'tip.required' => 'コツ・ポイントを入力してください',
+            'ingredients.*.material.required' => '材料を入力してください',
+            'ingredients.*.quantity.required' => '分量を入力してください',
+            'steps.*.content.required' => 'ステップの説明を入力してください'
         ]);
     
         $recipe = Recipe::find($id);
         $user = auth()->id();
     
-        // 編集権限がない場合、エラーを返す
+        /* 編集権限がない場合、エラーを返す
         if ($recipe->user_id != $user) {
             return response()->json([
                 'message' => 'You do not have permission to edit this recipe.'
             ], 403);
-        }
+        }*/
     
         if ($request->has('title')) {
             $recipe->title = strip_tags($request->input('title'));
@@ -200,16 +261,17 @@ class RecipeController extends Controller
         if ($request->hasFile('cover_photo_path')) {
             $filename = 'cover-' . $user . '-' . uniqid() . '.jpg';
             $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
-            Storage::put('public/cover_image/' . $filename, $coverImg);
-            Storage::delete('public/cover_image/' . $recipe->cover_photo_path);
+            Storage::put('cover_image/' . $filename, $coverImg);
+            Storage::delete('cover_image/' . $recipe->cover_photo_path);
             $recipe->cover_photo_path = $filename;
         }
     
         $recipe->save();
     
         // Ingredient(材料)の更新
+        $ingredientsData = $request->input('ingredients');
         if ($request->has('ingredients')) {
-            foreach ($request->input('ingredients') as $ingredientData) {
+            foreach ($ingredientsData as $ingredientData) {
                 if (isset($ingredientData['id'])) {
                     $ingredient = Ingredient::find($ingredientData['id']);
     
@@ -240,8 +302,9 @@ class RecipeController extends Controller
         }
 
         // Step（作り方）の更新
+        $stepsData = $request->all()['steps']; 
         if ($request->has('steps')) {
-            foreach ($request->input('steps') as $stepData) {
+            foreach ($stepsData as $stepData) {
                 if (isset($stepData['id'])) {
                     $step = Step::find($stepData['id']);
                 
@@ -254,11 +317,11 @@ class RecipeController extends Controller
                         $step->content = strip_tags($stepData['content']);
                     }
                 
-                    if ($request->hasFile('step_photo_path')) {
+                    if (isset($stepData['step_photo_path']) && !empty($stepData['step_photo_path'])) {
                         $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
-                        $stepImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
-                        Storage::put('public/step_image/' . $filename, $stepImg);
-                        Storage::delete('public/step_image/' . $step->step_photo_path);
+                        $stepImg = Image::make($request->file('step_photo_path'))->fit(800, 600)->encode('jpg');
+                        Storage::put('step_image/' . $filename, $stepImg);
+                        Storage::delete('step_image/' . $step->step_photo_path);
                         $step->step_photo_path = $filename;
                     }
                 
@@ -270,10 +333,10 @@ class RecipeController extends Controller
                     $step->recipe_id = $recipe->id;
                     $step->user_id = $user;
                 
-                    if ($request->hasFile('step_photo_path')) {
+                    if (isset($stepData['step_photo_path'])) {
                         $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
-                        $stepImg = Image::make($request->file('step_photo_path'))->fit(300, 400)->encode('jpg');
-                        Storage::put('public/step_image/' . $filename, $stepImg);
+                        $stepImg = Image::make($stepData['step_photo_path'])->fit(300, 400)->encode('jpg');
+                        Storage::put('step_image/' . $filename, $stepImg);
                         $step->step_photo_path = $filename;
                     }
                 
@@ -282,7 +345,7 @@ class RecipeController extends Controller
             }
         }
 
-        return redirect()->route('recipe.show', ['recipe_id' => $recipe->id]);
+        return redirect()->route('recipe.show', ['recipe_id' => $recipe->id])->with('message', 'レシピが更新されました！');;
 }
     
     //レシピの投稿を削除する
@@ -292,25 +355,19 @@ class RecipeController extends Controller
 
         // レシピを存在するかどうかを確認する
         if (!$recipe) {
-            return response()->json([
-                'message' => 'Recipe not found'
-            ], 404);
+            return redirect()->route('dashboard')->with('alert', 'レシピを見つかりませんでした');
         }
 
-        // Check if the user has permission to delete the recipe
+        // ユーザーが削除の権限があるかどうかを確認する
         if ($recipe->user_id != $user) {
-            return response()->json([
-                'message' => 'You do not have permission to delete this recipe.'
-            ], 403);
+            return back()->with('alert', 'レシピを削除できませんでした');
         }
 
         //論理削除を実装する
         $recipe->delete();
 
-        //レシピ削除のルートをまだ確定できなくて、しばらくjsonで返そうと考える。
-        return response()->json([
-            'message' => 'Recipe has been deleted successfully.'
-        ]);
+        //レシピを削除されたら、ユーザー自身のページへ戻す
+        return redirect()->route('dashboard')->with('message', 'レシピを削除しました');
     }
 
     public function searchRecipe(Request $request) {
@@ -320,7 +377,7 @@ class RecipeController extends Controller
             $showUserData = $showRecipeData->user;
             return view('recipe.search', compact('results', 'showUserData'));
         } else {
-            return redirect()->back()->with('message', 'Search Not Found');
+            return redirect()->back()->with('alert', 'Search Not Found');
         }
 
     }

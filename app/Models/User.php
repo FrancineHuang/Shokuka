@@ -76,4 +76,19 @@ class User extends Authenticatable
     public function likes() {
         return $this->hasMany(Like::class);
     }
+
+    /**
+     * usersとfollowerの関係を定義(ユーザー自身のことをフォローしている人)
+     */
+
+    public function followers() {
+        return $this->belongsToMany(User::class, 'followers', 'followee_id', 'follower_id')->withTimestamps();
+    }
+
+    /**
+     * usersとfolloweeの関係を定義(ユーザー自身がフォローしている人)
+     */
+    public function followees() {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'followee_id')->withTimestamps();
+    }
 }

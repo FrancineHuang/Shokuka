@@ -6,6 +6,7 @@ $userData = auth()->user();
     <!-- ● カード1：レシピ全体の表示部分-->
       <div class="flex justify-center">
         <div class="w-9/12 mt-36 mb-8 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+          <x-message :message="session('message')"></x-message>
       <!--　ユーザーのニックネームとアイコン　-->
           <div class="flex flex-row py-3">
             @if($showUserData->icon_path)
@@ -39,7 +40,10 @@ $userData = auth()->user();
         </a>
         @else
         <a href="{{route('recipe.like',['recipe_id' => $showRecipeData->id])}}" aria-current="page" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
-          <i class="fa-regular fa-heart"></i> お気に入り（{{$userData->likes->count()}}）
+          <i class="fa-regular fa-heart"></i> お気に入り
+          @if($userData)
+          （{{$userData->likes->count()}}）
+          @endif
         </a>
         @endif
         <a href="{{ route('recipe.edit', ['recipe_id' => $showRecipeData->id]) }}" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
@@ -81,19 +85,19 @@ $userData = auth()->user();
               <span class="text-2xl text-red-800 px-2"><i class="fa-solid fa-list-ol"></i></span>
               作り方・ステップ
             </h5>
+            @foreach ($showStepData as $step)
             <div class="container mx-auto flex px-5 py-10 md:flex-row flex-col items-center">
               <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-                <p class="sm:text-xl text-base font-bold mb-4 text-red-800">Step 1 </p>
-                @foreach ($showStepData as $step)
+                <p class="sm:text-xl text-base font-bold mb-4 text-red-800">Step {{ $loop->iteration }} </p>
                 <p class="w-full my-2 text-gray-900 text-sm block">
                 {{ $step->content }}
                 </p>
-                @endforeach
               </div>
               <div class="lg:max-w-md lg:w-2/12 md:w-1/3 w-1/4">
-                <a href="#"><img class="object-cover object-center rounded" alt="hero" src="{{ asset('storage/step_image/' . $step->step_photo_path) }}"></a>
+                <a href="#"><img class="object-cover object-center rounded" alt="step" src="{{ asset('storage/step_image/' . $step->step_photo_path) }}"></a>
               </div>
             </div>
+            @endforeach
           </div>
       <!--　レシピのコツ・ポイント　-->
           <div class="py-4">

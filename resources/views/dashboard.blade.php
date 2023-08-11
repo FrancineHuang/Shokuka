@@ -5,6 +5,15 @@ $showRecipeData = $userData->recipes()->latest()->limit(3)->get();
 
 <x-header-footer :userData="$userData">
     {{--カード1: ユーザープロフィール--}}
+    @if(session('message'))
+        <div class="flex justify-center mt-24 w-9/12 my-5">
+            <x-message :message="session('message')"></x-message>
+        </div>
+    @elseif(session('alert'))
+        <div class="flex justify-center mt-24 w-9/12 my-5">
+            <x-alert :alert="session('alert')"></x-alert>
+        </div>
+    @endif
     <div class="flex justify-center mt-24">
         <div class="w-9/12 my-5 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
             <div class="flex flex-col space-y-4 md:space-y-0 md:space-x-6 md:flex-row">
