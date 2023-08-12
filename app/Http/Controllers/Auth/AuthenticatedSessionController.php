@@ -23,14 +23,26 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $request->validate([
+            'email_or_username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+    
+        $fieldType = filter_var($request->email_or_username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        
+        if (Auth::attempt([$fieldType => $request->email_or_username, 'password' => $request->password])) {
+            $request->session()->regenerate();
+    
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+    
+        return back()->withErrors([
+            'email_or_username' => 'The provided credentials do not match our records.',
+        ]);
     }
+    
 
     /**
      * Destroy an authenticated session.

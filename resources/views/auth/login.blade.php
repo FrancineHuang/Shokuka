@@ -21,6 +21,12 @@
                         本格中華料理を楽しみにしましょう。
                     </p>
                     
+                    @if ($errors->any())
+                        @foreach ($errors->all() as $error)
+                        <x-alert :alert="$error"></x-alert>
+                        @endforeach
+                    @endif
+
                     <form method="POST" action="{{route('login')}}" class="mt-8 grid grid-cols-4 gap-6">
                     @csrf
                     <div class="my-4 col-span-4 sm:col-span-3">
@@ -32,8 +38,8 @@
                             </label>
                             
                             <input
-                            id="email" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                            type="email" name="email" :value="old('email')" required autofocus/>
+                            id="email_or_username" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                            type="text" name="email_or_username" :value="old('email_or_username')" required autofocus/>
                         </div>
                         
                         <!-- Password -->
