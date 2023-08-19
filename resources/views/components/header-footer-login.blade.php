@@ -27,7 +27,7 @@
     <header class="fixed max-w-full top-0 left-0 right-0 z-30">
         <nav class="bg-red-800 border-gray-200 h-16 px-2 sm:px-4 py-2.5">
             <div class="container flex flex-wrap items-center justify-between mx-auto my-2">
-                <a href="#" class="flex items-center">
+                <a href="{{ route('welcome') }}" class="flex items-center">
                 <span class="text-xl font-semibold whitespace-nowrap text-neutral-50">Shokuka</span>
                 </a>
             </div>
