@@ -35,14 +35,14 @@ jobs:
       run: npm run build
 
   deploy:
-    needs: compile-assets # Only run after assets compilation is successful.
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to EC2
       env:
         PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
         HOST: 18.178.29.243
-        USER: ec2-user # Usually 'ubuntu' or 'ec2-user' depending on the AMI you've chosen.
+        USER: ec2-user
       run: |
         echo "$PRIVATE_KEY" > deploy_key
         chmod 600 deploy_key
