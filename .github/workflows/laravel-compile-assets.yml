@@ -38,13 +38,17 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
+
     - name: Deploy to EC2
       env:
-        PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
+        PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        PASSPHRASE: ${{ secrets.DEPLOY_PASSPHRASE }}
         HOST: 18.178.29.243
         USER: ec2-user
       run: |
         echo "$PRIVATE_KEY" > deploy_key
         chmod 600 deploy_key
-        scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/path/to/your/laravel/app/on/ec2/public/
+        sshpass -p $PASSPHRASE scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/path/to/your/laravel/app/on/ec2/public/
         rm -f deploy_key
