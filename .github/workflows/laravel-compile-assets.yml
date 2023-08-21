@@ -50,5 +50,5 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > deploy_key
         chmod 600 deploy_key
-        sshpass -p $PASSPHRASE scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/path/to/your/laravel/app/on/ec2/public/
+        sshpass -p $PASSPHRASE scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/var/www/html/shokuka/public
         rm -f deploy_key
