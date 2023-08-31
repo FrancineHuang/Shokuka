@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
     - name: Checkout code
@@ -37,6 +38,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - name: Install sshpass
       run: sudo apt-get update && sudo apt-get install -y sshpass
@@ -44,11 +46,11 @@ jobs:
     - name: Deploy to EC2
       env:
         PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-        PASSPHRASE: ${{ secrets.DEPLOY_PASSPHRASE }}
         HOST: 18.178.29.243
         USER: ec2-user
       run: |
         echo "$PRIVATE_KEY" > deploy_key
         chmod 600 deploy_key
-        sshpass -p $PASSPHRASE scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/var/www/html/shokuka/public
+        scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/var/www/html/shokuka/public
         rm -f deploy_key
+    
