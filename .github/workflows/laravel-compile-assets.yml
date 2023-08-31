@@ -1,4 +1,4 @@
-name: Compile Laravel Assets
+name: Compile and Deploy Laravel Assets
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20  # ジョブの最大実行時間を適切に設定してください
 
     steps:
     - name: Checkout code
@@ -35,31 +35,6 @@ jobs:
     - name: Compile Assets
       run: npm run build
 
-    - name: Create a tar archive of the project
-      run: tar -czf project.tar.gz ./
-
-    - name: Upload the tar archive
-      uses: actions/upload-artifact@v2
-      with:
-        name: project-archive
-        path: project.tar.gz
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-    - name: Download the tar archive
-      uses: actions/download-artifact@v2
-      with:
-        name: project-archive
-
-    - name: Extract the tar archive
-      run: tar -xzf project.tar.gz
-
-    - name: List all files and directories before scp
-      run: ls -la
-      
     - name: Install sshpass
       run: sudo apt-get update && sudo apt-get install -y sshpass
 
