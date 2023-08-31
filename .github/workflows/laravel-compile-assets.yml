@@ -1,74 +1,65 @@
-name: Compile Laravel Assets
+name: laravel-compile-assets.yml
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+  
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, gd
+          tools: composer:v2
+  
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+  
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+  
+      - name: Install Node Dependencies
+        run: npm install
+  
+      - name: Compile Assets
+        run: npm run build
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, pdo_mysql, gd
-        tools: composer:v2
-
-    - name: Install Dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install Node Dependencies
-      run: npm install
-
-    - name: Compile Assets
-      run: npm run build
-
-  codedeploy:
+  deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-1
-
-    - name: Install AWS CLI
-      run: |
-        if ! aws --version ; then
-          sudo apt-get install unzip
+      - name: AWS CLI install
+        run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --update
-        else
-          echo "AWS CLI already installed"
-        fi
+          aws --version
 
-    - name: Package and Upload to S3
-      run: |
-        zip -r application.zip . # This zips the current directory, adapt path if necessary
-        aws s3 cp application.zip s3://shokuka-bucket/deployments/application.zip
-
-    - name: Deploy using CodeDeploy
-      run: |
-        aws deploy create-deployment \
-          --application-name Shokuka \
-          --deployment-config-name CodeDeployDefault.OneAtATime \
-          --deployment-group-name shokuka-deploy-group \
-          --s3-location bucket=shokuka-bucket,bundleType=zip,key=deployments/application.zip
+      - name: AWS set Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ap-northeast-1
+          
+      - name: Deploy
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > private_key
+          chmod 600 private_key
+          ssh -oStrictHostKeyChecking=no ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST_NAME }} -i private_key "cd /var/www/html/shokuka/ && git pull origin main"
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+  
