@@ -1,71 +1,54 @@
-name: Deploy Laravel
+name: Compile Laravel Assets
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-  
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, pdo_mysql, gd
-          tools: composer:v2
-  
-      - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-  
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-  
-      - name: Install Node Dependencies
-        run: npm install
-  
-      - name: Compile Assets
-        run: npm run build
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, pdo_mysql, gd
+        tools: composer:v2
+
+    - name: Install Dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install Node Dependencies
+      run: npm install
+
+    - name: Compile Assets
+      run: npm run build
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
-      - name: Get Runner IP
-        id: ip
-        run: echo "::set-output name=ipv4::$(curl -s https://api64.ipify.org?format=text)"
-      
-      - name: AWS CLI install
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-          aws --version
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
 
-      - name: AWS set Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_DEPLOY_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-1
-          
-      - name: Deploy
-        env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          EC2_USER_NAME: ${{ secrets.EC2_USER_NAME }}
-          EC2_HOST_NAME: ${{ secrets.EC2_HOST_NAME }}
-          EC2_SECURITY_GROUP_ID: ${{ secrets.EC2_SECURITY_GROUP_ID }}
-        run: |
-          aws ec2 authorize-security-group-ingress --group-id $EC2_SECURITY_GROUP_ID --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-          echo "$DEPLOY_SSH_KEY" > private_key
-          chmod 600 private_key
-          ssh -oStrictHostKeyChecking=no $EC2_USER_NAME@$EC2_HOST_NAME -i private_key "cd /var/www/html/shokuka/ && git pull origin main"
-          aws ec2 revoke-security-group-ingress --group-id $EC2_SECURITY_GROUP_ID --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    - name: Deploy to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        PASSPHRASE: ${{ secrets.DEPLOY_PASSPHRASE }}
+        HOST: 18.178.29.243
+        USER: ec2-user
+      run: |
+        echo "$PRIVATE_KEY" > deploy_key
+        chmod 600 deploy_key
+        sshpass -p $PASSPHRASE scp -i deploy_key -o StrictHostKeyChecking=no -r ./public/build $USER@$HOST:/var/www/html/shokuka/public
+        rm -f deploy_key
