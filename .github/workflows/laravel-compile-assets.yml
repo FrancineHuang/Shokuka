@@ -38,11 +38,22 @@ jobs:
     - name: List files in public directory after build
       run: ls -la public/
 
+    - name: Archive build output
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifact
+        path: ./
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifact
+
     - name: List all files and directories before scp
       run: ls -la
       
