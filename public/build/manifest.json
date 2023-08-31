@@ -1,0 +1,27 @@
+{
+  "resources/js/app.js": {
+    "file": "assets/app-aa27e469.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/dynamicIngredients.js": {
+    "file": "assets/dynamicIngredients-0def204b.js",
+    "isEntry": true,
+    "src": "resources/js/dynamicIngredients.js"
+  },
+  "resources/js/dynamicSteps.js": {
+    "file": "assets/dynamicSteps-144d4117.js",
+    "isEntry": true,
+    "src": "resources/js/dynamicSteps.js"
+  },
+  "resources/js/tailwind.config.js": {
+    "file": "assets/tailwind.config-c52ef076.js",
+    "isEntry": true,
+    "src": "resources/js/tailwind.config.js"
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-bffe6131.css",
+    "isEntry": true,
+    "src": "resources/sass/app.scss"
+  }
+}
