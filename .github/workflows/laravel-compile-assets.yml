@@ -34,12 +34,18 @@ jobs:
 
     - name: Compile Assets
       run: npm run build
+    
+    - name: List files in public directory after build
+      run: ls -la public/
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+    - name: List all files and directories before scp
+      run: ls -la
+      
     - name: Install sshpass
       run: sudo apt-get update && sudo apt-get install -y sshpass
 
