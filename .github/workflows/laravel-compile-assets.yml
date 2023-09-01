@@ -46,6 +46,6 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > deploy_key
         chmod 600 deploy_key
-        ssh -i deploy_key -o StrictHostKeyChecking=no $USER@$HOST "sudo chown -R ec2-user:nginx /var/www/html/shokuka/ && sudo chmod -R 775 /var/www/html/shokuka/"
         rsync -avz -e "ssh -i deploy_key -o StrictHostKeyChecking=no" --exclude 'bootstrap/cache/' --exclude 'node_modules/' --exclude 'vendor/' ./* $USER@$HOST:/var/www/html/shokuka
+        ssh -i deploy_key -o StrictHostKeyChecking=no $USER@$HOST "sudo chown -R nginx:nginx /var/www/html/shokuka/storage/ && sudo chmod -R 775 /var/www/html/shokuka/storage/ && sudo chown -R nginx:nginx /var/www/html/shokuka/bootstrap/cache/ && sudo chmod -R 775 /var/www/html/shokuka/bootstrap/cache/"
         rm -f deploy_key 
