@@ -46,5 +46,5 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > deploy_key
         chmod 600 deploy_key
-        rsync -avz -e "ssh -i deploy_key -o StrictHostKeyChecking=no" --exclude 'bootstrap/cache/' ./* $USER@$HOST:/var/www/html/shokuka
+        rsync -avz -e "ssh -i deploy_key -o StrictHostKeyChecking=no" --exclude 'bootstrap/cache/' --exclude 'node_modules/' --exclude 'vendor/' ./* $USER@$HOST:/var/www/html/shokuka
         rm -f deploy_key 
