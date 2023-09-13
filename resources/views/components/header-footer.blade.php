@@ -40,7 +40,7 @@ $userData = auth()->user();
                 <button type="button" class="flex mr-3 text-sm bg-neutral-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                 <span class="sr-only">Open user menu</span>
                 @if ($userData->icon_path)
-                    <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $userData->icon_path) }}" alt="user photo">             
+                    <img class="w-8 h-8 rounded-full" src="{{ $userData->icon_path }}" alt="user photo">             
                 @else
                     <img class="w-8 h-8 rounded-full" src="/default_avatar.jpeg" alt="user photo">
                 @endif
