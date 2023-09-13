@@ -20,7 +20,7 @@ $showRecipeData = $userData->recipes()->latest()->limit(3)->get();
 
                 {{-- アイコン --}}
                 @if ($userData->icon_path)
-                <img src="{{ asset('storage/icon_image/' . $userData->icon_path) }}" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start">
+                <img src="{{ $userData->icon_path }}" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start">
                 @else
                 <img src="/default_avatar.jpeg" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start">
                 @endif
