@@ -41,7 +41,7 @@ class ProfileController extends Controller
             //ローカルでもS3バケットでも同様なパス設定をします：
             $path = 'icon_image/' . $filename;
             //diskをS3に変更します
-            Storage::disk('s3')->put($path, (string) $iconImg, 'public');
+            Storage::disk('s3')->put($path, (string) $iconImg);
             //アップロードした画像のフルパスを取得：
             $validated['icon_path'] =  Storage::disk('s3')->url($path);
         }
