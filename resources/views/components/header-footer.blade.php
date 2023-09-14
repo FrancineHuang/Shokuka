@@ -103,17 +103,17 @@ $userData = auth()->user();
     <footer class="bg-red-800">
         <div class="mt-12 mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-12 sm:items-start">
             <div class="text-neutral-50 text-2xl">
-                <a href="#">Shokuka</a>
+                <a href="{{ route('welcome') }}">Shokuka</a>
             </div>
             <nav class="mt-6 flex items-center space-x-3">
-                <a href="#" class="rounded-lg bg-gray-100 p-1 text-gray-500 transition hover:bg-gray-200">
+                <a href="https://twitter.com/Francine_webdev" class="rounded-lg bg-gray-100 p-1 text-gray-500 transition hover:bg-gray-200">
                 <svg class="h-6 w-6" viewBox="0 0 512 512">
                     <path
                     fill="currentColor"
                     d="M437 152a72 72 0 01-40 12a72 72 0 0032-40a72 72 0 01-45 17a72 72 0 00-122 65a200 200 0 01-145-74a72 72 0 0022 94a72 72 0 01-32-7a72 72 0 0056 69a72 72 0 01-32 1a72 72 0 0067 50a200 200 0 01-105 29a200 200 0 00309-179a200 200 0 0035-37" />
                 </svg>
                 </a>
-                <a href="#" class="rounded-lg bg-gray-100 p-1 text-gray-500 transition hover:bg-gray-200">
+                <a href="https://www.linkedin.com/in/francinehuang30" class="rounded-lg bg-gray-100 p-1 text-gray-500 transition hover:bg-gray-200">
                 <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 512 512">
                     <circle cx="142" cy="138" r="37" />
                     <path stroke="currentColor" stroke-width="66" d="M244 194v198M142 194v198" />
