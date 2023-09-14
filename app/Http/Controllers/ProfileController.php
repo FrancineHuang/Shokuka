@@ -57,7 +57,6 @@ class ProfileController extends Controller
                     'Bucket' => env('AWS_BUCKET'),
                     'Key'    => $path,
                     'Body'   => (string) $iconImg,
-                    'ACL'    => 'public-read',
                 ]);
                 dd($result);
             } catch (\Exception $e) {
