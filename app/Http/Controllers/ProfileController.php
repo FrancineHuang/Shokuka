@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use Aws\S3\S3Client;
 
 class ProfileController extends Controller
 {
@@ -41,7 +42,7 @@ class ProfileController extends Controller
             $path = 'icon_image/' . $filename;
     
             // デバッグのためのコード
-            use Aws\S3\S3Client;
+            
             $client = new S3Client([
                 'credentials' => [
                     'key'    => env('AWS_ACCESS_KEY_ID'),
