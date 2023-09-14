@@ -67,8 +67,8 @@
         <div>
             <x-input-label for="introduction" value="自己紹介" />
             <textarea id="introduction" name="introduction" type="text"
-                class="mt-1 block w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-800 focus:border-red-800 p-2.5" :value="old('introduction', $user->introduction)"
-                required autofocus autocomplete="introduction" placeholder="自分のことについて200字以内で紹介してください"></textarea>
+            class="mt-1 block w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-800 focus:border-red-800 p-2.5"
+            required autofocus autocomplete="introduction" placeholder="自分のことについて200字以内で紹介してください">{{ old('introduction', $user->introduction) }}</textarea>        
             <x-input-error class="mt-2" :messages="$errors->get('introduction')" />
         </div>
 
