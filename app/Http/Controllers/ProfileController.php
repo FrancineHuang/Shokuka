@@ -39,8 +39,33 @@ class ProfileController extends Controller
             $iconImg = Image::make($request->file('icon_path'))->fit(300, 300)->encode('jpg');
             //ローカルでもS3バケットでも同様なパス設定をします：
             $path = 'icon_image/' . $filename;
+    
+            // デバッグのためのコード
+            use Aws\S3\S3Client;
+            $client = new S3Client([
+                'credentials' => [
+                    'key'    => env('AWS_ACCESS_KEY_ID'),
+                    'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                ],
+                'region' => env('AWS_DEFAULT_REGION'),
+                'version' => 'latest',
+                'debug' => true,  // デバッグを有効にする
+            ]);
+            try {
+                $result = $client->putObject([
+                    'Bucket' => env('AWS_BUCKET'),
+                    'Key'    => $path,
+                    'Body'   => (string) $iconImg,
+                    'ACL'    => 'public-read',
+                ]);
+                dd($result);
+            } catch (\Exception $e) {
+                dd($e->getMessage());
+            }
+            // デバッグコードここまで
+    
             //diskをS3に変更します
-            Storage::disk('s3')->put($path, (string) $iconImg, 'public');
+            // Storage::disk('s3')->put($path, (string) $iconImg, 'public');
             //アップロードした画像のフルパスを取得：
             $validated['icon_path'] =  Storage::disk('s3')->url($path);
         }
@@ -55,6 +80,7 @@ class ProfileController extends Controller
     
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+    
 
     /**
      * Delete the user's account.
