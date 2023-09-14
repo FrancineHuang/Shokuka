@@ -9,7 +9,6 @@ $userData = auth()->user();
 
       <!-- ● カード1 レシピを作成する：タイトル＋写真＋紹介文-->
       <div class="flex justify-center">
-
         <div class="w-9/12 mt-36 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
           @if ($errors->any())
             @foreach ($errors->all() as $error)
@@ -24,7 +23,7 @@ $userData = auth()->user();
         <div class="flex items-center justify-center w-full">
           <label
             for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" >
+            class="upload-section flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50" >
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
                   <svg
                     aria-hidden="true"
@@ -44,7 +43,13 @@ $userData = auth()->user();
               </div>
               <input id="dropzone-file" type="file" name="cover_photo_path" class="hidden" required>
           </label>
-
+          <div class="image-container">
+            <img id="imagePreview" class="max-w-4xl max-h-96 rounded-lg" src="" alt="Recipe cover" style="display: none;">
+            <div class="mx-auto max-w-xs mt-4" style="display: none;" id="reupload-section">
+              <label for="reupload-button" class="mb-1 block text-sm font-medium text-gray-700">写真をアップロード</label>
+              <input id="reupload-button" type="file" class="block w-full text-sm file:mr-4 file:rounded-md file:border-0 file:bg-red-800 file:py-2.5 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-700 focus:outline-none disabled:pointer-events-none disabled:opacity-60" />
+          </div>
+          </div>
         </div> 
 
 
@@ -155,6 +160,6 @@ $userData = auth()->user();
       </form>
       </main>
 
-      @vite(['resources/js/dynamicSteps.js','resources/js/dynamicIngredients.js'])
+      @vite(['resources/js/dynamicSteps.js','resources/js/dynamicIngredients.js','resources/js/coverPreview.js'])
 </x-header-footer>
     <!--Mainはここまで-->
