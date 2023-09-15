@@ -1,9 +1,8 @@
-//ステップ数を最初に1から始まる
+//ステップ数を初期化する
 let stepCount = document.querySelector('#recipe-steps').childElementCount;
 
 //ステップを追加する
 function addStep() {
-    stepCount = document.querySelector('#recipe-steps').childElementCount + 1;
     stepCount++;
     const div = document.createElement('div');
     div.id = 'step' + stepCount;
