@@ -106,12 +106,12 @@ $userData = auth()->user();
       </div>
   
       <div id="recipe-steps">
-        <div id="recipe-steps" class="container mx-auto flex flex-row px-5 py-10 md:flex-row items-center">
+        <div class="container mx-auto flex flex-row px-5 py-10 md:flex-row items-center">
           <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
               <!--テキスト入力欄-->
               @foreach ($editStepData as $step)
-              <label for="content" class="sm:text-xl text-2xl font-bold mb-4 text-red-800">Step {{ $loop->iteration }} </label>
-              <textarea name="steps[0][content]" id="content" rows="4" class="w-full my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">{{ $step->content }}</textarea>
+              <label for="content{{ $loop->iteration }}" class="sm:text-xl text-2xl font-bold mb-4 text-red-800">Step {{ $loop->iteration }} </label>
+              <textarea name="steps[{{ $loop->iteration - 1 }}][content]" id="content{{ $loop->iteration }}" rows="4" class="w-full my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">{{ $step->content }}</textarea>
               <!--ステップ写真のアップロード-->
               <label class="flex w-1/5 cursor-pointer appearance-none justify-center rounded-md border border-dashed border-gray-300 bg-white px-3 py-6 text-sm transition hover:border-gray-400 focus:border-solid focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75" tabindex="0">
                   <span for="photo-dropbox" class="flex items-center space-x-2">
@@ -121,7 +121,7 @@ $userData = auth()->user();
                       <polyline points="118.1 161.9 152 128 185.9 161.9" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></polyline>
                       <line x1="152" y1="208" x2="152" y2="128" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg>
                       <span class="text-xs font-medium text-gray-600">クリックして写真をアップロード</span>
-                  <input name="steps[0][step_photo_path]" id="step_photo_path" type="file" class="sr-only">
+                  <input name="steps[{{ $loop->iteration - 1 }}][step_photo_path]" id="step_photo_path{{ $loop->iteration }}" type="file" class="sr-only">
               </span>
             </label>
             <div class="flex justify-center my-3">
@@ -154,7 +154,7 @@ $userData = auth()->user();
   </div>
   </form>
 
-@vite(['resources/js/dynamicSteps.js','resources/js/dynamicIngredients.js'])
+@vite(['resources/js/updateSteps.js','resources/js/dynamicIngredients.js'])
 <script>
   let stepCount = {{ count($editStepData) }};
 </script>
