@@ -11,8 +11,10 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/tailwind.config.js',
                 'resources/js/dynamicSteps.js',
+                'resources/js/updateSteps.js',
                 'resources/js/dynamicIngredients.js',
-                'resources/js/coverPreview.js'
+                'resources/js/coverPreview.js',
+                'resources/js/stepPreview.js'
             ],
             refresh: true,
         }),
