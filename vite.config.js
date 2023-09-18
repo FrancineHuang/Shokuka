@@ -13,8 +13,7 @@ export default defineConfig({
                 'resources/js/dynamicSteps.js',
                 'resources/js/updateSteps.js',
                 'resources/js/dynamicIngredients.js',
-                'resources/js/coverPreview.js',
-                'resources/js/stepPreview.js'
+                'resources/js/coverPreview.js'
             ],
             refresh: true,
         }),
