@@ -36,14 +36,11 @@ $userData = auth()->user();
       <div class="inline-flex rounded-md shadow-sm my-3">
         @if($like)
         <a href="{{route('recipe.unlike',['recipe_id' => $showRecipeData->id])}}" aria-current="page" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
-          <i class="fa-solid fa-heart"></i> お気に入り（{{$userData->likes->count()}}）
+          <i class="fa-solid fa-heart"></i> お気に入り
         </a>
         @else
         <a href="{{route('recipe.like',['recipe_id' => $showRecipeData->id])}}" aria-current="page" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
           <i class="fa-regular fa-heart"></i> お気に入り
-          @if($userData)
-          （{{$userData->likes->count()}}）
-          @endif
         </a>
         @endif
         <a href="{{ route('recipe.edit', ['recipe_id' => $showRecipeData->id]) }}" class="px-4 py-2 text-sm font-medium text-red-800 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700">
@@ -117,13 +114,13 @@ $userData = auth()->user();
       <div class="w-9/12 mt-8 mb-36 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
     <!--　セクションタイトル　-->
         <div class="flex flex-row py-3">
-          <h5 class="text-2xl font-bold text-neutral-900">コメント<span class="text-red-800">(1)</span></h5>
+          <h5 class="text-2xl font-bold text-neutral-900">コメント{{--<span class="text-red-800">(1)</span>--}}</h5>
         </div>
         <!--コメント送信-->
         <form action="{{ route('comment.store', ['recipe_id' => $showRecipeData->id]) }}" method="POST" class="flex flex-row py-3">
           @csrf
           <input name="recipe_id" type="hidden" value="{{ $showRecipeData->id }}">
-          <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/474x/a0/7c/4f/a07c4f179663ea3e663cdac4a7534b6b.jpg" alt="user photo">
+          <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $userData->icon_path) }}" alt="user photo">
           <textarea rows="4" name="content" class="w-3/5 my-2 pl-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
           <button type="submit" class="mx-2 h-12 w-36 inline-flex cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded bg-red-800 px-3 py-2 text-sm font-medium text-neutral-50 transition hover:border-red-800 hover:bg-red-500 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-800">
             返信</button>
@@ -133,7 +130,7 @@ $userData = auth()->user();
       @forelse($showCommentData as $comment)
         <div class="flex flex-col">
           <div class="flex flex-row py-3">
-            <img class="w-8 h-8 rounded-full" src="https://i.pinimg.com/564x/af/66/f6/af66f6f05298dacf38f7badfc176080b.jpg" alt="user photo">
+            <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $comment->user->icon_path) }}" alt="user photo">
             <p class="pt-2 px-3 text-xs text-left text-neutral-700">{{ $comment->user->username }}</p>
             <p class="pt-2 px-3 text-xs text-left text-neutral-400">{{ $comment->created_at }}</p>
           </div>
