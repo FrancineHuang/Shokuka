@@ -206,6 +206,7 @@ class RecipeController extends Controller
 
     //レシピの投稿を更新する
     public function updateRecipe(Request $request, $id) {
+        //dd($request->all());
         $request->validate([
             'cover_photo_path' => ['sometimes','image', 'max:5120'],
             'title' => ['sometimes', 'string', 'max:255'],
@@ -363,8 +364,10 @@ class RecipeController extends Controller
             return back()->with('alert', 'レシピを削除できませんでした');
         }
 
-        //論理削除を実装する
-        $recipe->delete();
+        //論理削除を実装するが、Meilisearchの不具合を避けるために一時的に無効化にします
+        Recipe::withoutSyncingToSearch(function () use ($recipe) {
+            $recipe->delete();
+        });
 
         //レシピを削除されたら、ユーザー自身のページへ戻す
         return redirect()->route('dashboard')->with('message', 'レシピを削除しました');
