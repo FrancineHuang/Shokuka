@@ -378,11 +378,14 @@ class RecipeController extends Controller
             $results = Recipe::where('title', 'LIKE', '%'.$request->keyword.'%')->latest()->paginate(15);
             $showRecipeData = Recipe::with('user')->first();
             $showUserData = $showRecipeData->user;
-            return view('recipe.search', compact('results', 'showUserData'));
+            $keyword = $request->keyword;
+            $totalCount = $results->total(); // total()を使用して全結果の数を取得
+    
+            return view('recipe.search', compact('results', 'showUserData', 'keyword', 'totalCount'));
         } else {
             return redirect()->back()->with('alert', 'Search Not Found');
         }
-
     }
+    
 
 }

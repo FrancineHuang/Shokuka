@@ -3,17 +3,17 @@ $userData = auth()->user();
 @endphp
 
 <x-header-footer :userData="$userData">
-      <!--セクションタイトルはここから-->
+      {{--セクションタイトルはここから--}}
       <div class="container px-5 pt-24 pb-8 mx-auto flex flex-wrap w-full mb-3 mt-16">
         <div class="lg:w-1/2 w-full mb-6 lg:mb-0">
-          <p class="sm:text-2xl text-2xl font-medium title-font mb-2 text-neutral-900">「キーワード」を含まれているレシピ：100件</p>
+          <p class="sm:text-2xl text-2xl font-medium title-font mb-2 text-neutral-900">「{{ $keyword }}」を含まれているレシピ：{{ $totalCount }}件</p>
           <div class="h-1 w-20 bg-red-800 rounded ml-9"></div>
         </div>
       </div>
-      <!--セクションタイトルはここまで-->
+      {{--セクションタイトルはここまで--}}
 
-      <!--検索結果のカードはここから-->
-      <!--バックエンド側のロジックを追加してください-->
+      {{--検索結果のカードはここから--}}
+      {{--バックエンド側のロジックを追加してください--}}
       <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
         <div class="grid gap-8 lg:grid-cols-3 sm:max-w-sm sm:mx-auto lg:max-w-full">
         @if($results)
@@ -40,11 +40,11 @@ $userData = auth()->user();
         @endif
         </div>
       </div>
-      <!--検索結果のカードはここまで-->
+      {{--検索結果のカードはここまで--}}
 
-      <!--ページ数の表示はここから-->
-      <!--バックエンド側のロジックを追加してください-->
-        <nav aria-label="Page navigation example" class="grid place-items-center pb-20">
+      {{--ページ数の表示はここから--}}
+      {{--バックエンド側のロジックを追加してください--}}
+        {{--<nav aria-label="Page navigation example" class="grid place-items-center pb-20">
           <ul class="inline-flex items-center -space-x-px">
             <li>
               <a href="#" class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
@@ -76,7 +76,7 @@ $userData = auth()->user();
               </a>
             </li>
           </ul>
-        </nav>
-      <!--ページ数の表示はここまで-->
+        </nav>--}}
+      {{--ページ数の表示はここまで--}}
 
 </x-header-footer>
