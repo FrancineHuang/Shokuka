@@ -17,15 +17,20 @@ class UserController extends Controller
         $showRecipeData = $showUserData->recipes;
         $likedRecipes = $showUserData->likes()->with('recipe')->get();
     
-        // Check if the authenticated user is following the target user
+        //ユーザーがフォローしているかをチェック
         $currentlyFollowing = false;
         if (Auth::check()) {
             $authenticatedUser = auth()->user();
             $currentlyFollowing = $authenticatedUser->followees->contains($showUserData->id);
             Log::info('Currently Following: ' . ($currentlyFollowing ? 'true' : 'false'));
         }
+
+        // ユーザーがフォローしている人の数を取得
+        $followingCount = Follower::where('follower_id', $user_id)->count(); 
+        // そのユーザーをフォローしている人の数を取得
+        $followerCount = Follower::where('followee_id', $user_id)->count();
     
-        return view('user.show', compact('showUserData', 'showRecipeData', 'likedRecipes', 'currentlyFollowing'));
+        return view('user.show', compact('showUserData', 'showRecipeData', 'likedRecipes', 'currentlyFollowing', 'followingCount', 'followerCount'));
     }
 
     //ユーザーの全てのレシピの一覧ページ

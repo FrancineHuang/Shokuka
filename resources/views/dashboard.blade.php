@@ -33,11 +33,11 @@ $showRecipeData = $userData->recipes()->latest()->limit(3)->get();
                     <div class="flex flex-row mt-5">
                         <div class="flex flex-row">
                             <p class="text-neutral-500">フォロー中</p>
-                            <p class="text-neutral-700 pl-2">5</p>
+                            <p class="text-neutral-700 pl-2">{{ $followingCount }}</p>
                         </div>
                         <div class="flex flex-row pl-5">
                             <p class="text-neutral-500">フォロワー</p>
-                            <p class="text-neutral-700 pl-2">5</p>
+                            <p class="text-neutral-700 pl-2">{{ $followerCount }}</p>
                         </div>
                     </div>
                     <div class="flex flex-row pt-3">
