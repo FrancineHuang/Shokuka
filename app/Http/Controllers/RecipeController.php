@@ -92,7 +92,7 @@ class RecipeController extends Controller
         //アップロードした画像のフルパスを取得：
         $validated['cover_photo_path'] =  Storage::disk('s3')->url($coverPath);
 
-        $recipe->cover_photo_path = $filename;
+        $recipe->cover_photo_path = Storage::disk('s3')->url($coverPath);
 
         // レシピを保存
         $recipe->save();
