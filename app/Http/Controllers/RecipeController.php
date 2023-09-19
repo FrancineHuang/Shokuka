@@ -133,7 +133,7 @@ class RecipeController extends Controller
                     // Step（作り方ステップ）の写真を保存する
                     $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
                     $stepImg =  Image::make($stepData['step_photo_path'])->fit(300, 300)->encode('jpg');
-                    $stepPath = 'step_image' . $filename;
+                    $stepPath = 'step_image/' . $filename;
 
                     $saveStepImg = Storage::disk('s3')->put($stepPath, (string) $stepImg);
                     if(!$saveStepImg) {
