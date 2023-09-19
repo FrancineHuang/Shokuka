@@ -68,7 +68,7 @@ $showRecipeData = $userData->recipes()->latest()->limit(3)->get();
     @forelse($showRecipeData as $recipe)
     <div class="flex justify-center my-1">
         <div class="w-9/12 my-3 flex flex-row bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="{{ asset('storage/cover_image/' . $recipe->cover_photo_path) }}">
+            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="{{ $recipe->cover_photo_path }}">
             <div class="mb-8 ml-8">
                 <a href="{{ route('recipe.show', ['recipe_id' => $recipe->id]) }}" class="text-gray-900 font-bold text-xl mb-2">{{ $recipe->title }}</a>
                 <p class="py-1 text-gray-700 text-base">{{ $recipe->introduction }}</p>
