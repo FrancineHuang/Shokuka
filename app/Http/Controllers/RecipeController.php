@@ -140,7 +140,7 @@ class RecipeController extends Controller
                         return back()->with('uploadError', 'ステップ画像のアップロードに失敗しました。もう一度お試しください。');
                     }
 
-                    $step->step_photo_path = Storage::disk('S3')->url($stepPath);
+                    $step->step_photo_path = Storage::disk('s3')->url($stepPath);
                 }
 
                 // Step（作り方ステップ）を保存する
