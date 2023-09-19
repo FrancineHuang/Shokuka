@@ -86,7 +86,7 @@ class RecipeController extends Controller
         $saveCoverImg = Storage::disk('s3')->put($coverPath, (string) $coverImg);
         
         if(!$saveCoverImg) {
-            return back()->with('uploadError', '画像のアップロードに失敗しました。もう一度お試しください。');
+            return back()->with('uploadError', 'カバー画像のアップロードに失敗しました。もう一度お試しください。');
         }
 
         //アップロードした画像のフルパスを取得：
@@ -132,24 +132,15 @@ class RecipeController extends Controller
                 if(!empty($stepData['step_photo_path'])) {
                     // Step（作り方ステップ）の写真を保存する
                     $filename = 'step-' . $user->id . '-' . uniqid() . '.jpg';
+                    $stepImg =  Image::make($stepData['step_photo_path'])->fit(300, 300)->encode('jpg');
+                    $stepPath = 'step_image' . $filename;
 
-                    try{
-                        $stepImg =  Image::make($stepData['step_photo_path'])->fit(300, 300)->encode('jpg');
-                    } catch(\Exception $e) {
-                        Log::error('Image processing failed', [
-                            'error' => $e->getMessage(),
-                        ]);
-                        throw $e;
+                    $saveStepImg = Storage::disk('s3')->put($stepPath, (string) $stepImg);
+                    if(!$saveStepImg) {
+                        return back()->with('uploadError', 'ステップ画像のアップロードに失敗しました。もう一度お試しください。');
                     }
 
-                    $isStored = Storage::put('step_image/' . $filename, (string) $stepImg);
-                    if(!$isStored) {
-                        Log::error('Image storing failed', [
-                            'filename' => $filename
-                        ]);
-                    }
-
-                    $step->step_photo_path = $filename;
+                    $step->step_photo_path = Storage::disk('S3')->url($stepPath);
                 }
 
                 // Step（作り方ステップ）を保存する

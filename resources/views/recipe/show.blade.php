@@ -91,7 +91,7 @@ $userData = auth()->user();
                 </p>
               </div>
               <div class="lg:max-w-md lg:w-2/12 md:w-1/3 w-1/4">
-                <a href="#"><img class="object-cover object-center rounded" alt="step" src="{{ asset('storage/step_image/' . $step->step_photo_path) }}"></a>
+                <a href="#"><img class="object-cover object-center rounded" alt="step" src="{{ $step->step_photo_path }}"></a>
               </div>
             </div>
             @endforeach
@@ -120,7 +120,7 @@ $userData = auth()->user();
         <form action="{{ route('comment.store', ['recipe_id' => $showRecipeData->id]) }}" method="POST" class="flex flex-row py-3">
           @csrf
           <input name="recipe_id" type="hidden" value="{{ $showRecipeData->id }}">
-          <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $userData->icon_path) }}" alt="user photo">
+          <img class="w-8 h-8 rounded-full" src="{{ $userData->icon_path }}" alt="user photo">
           <textarea rows="4" name="content" class="w-3/5 my-2 pl-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
           <button type="submit" class="mx-2 h-12 w-36 inline-flex cursor-pointer select-none appearance-none items-center justify-center space-x-1 rounded bg-red-800 px-3 py-2 text-sm font-medium text-neutral-50 transition hover:border-red-800 hover:bg-red-500 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-800">
             返信</button>
@@ -130,7 +130,7 @@ $userData = auth()->user();
       @forelse($showCommentData as $comment)
         <div class="flex flex-col">
           <div class="flex flex-row py-3">
-            <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $comment->user->icon_path) }}" alt="user photo">
+            <img class="w-8 h-8 rounded-full" src="{{ $comment->user->icon_path }}" alt="user photo">
             <p class="pt-2 px-3 text-xs text-left text-neutral-700">{{ $comment->user->username }}</p>
             <p class="pt-2 px-3 text-xs text-left text-neutral-400">{{ $comment->created_at }}</p>
           </div>
