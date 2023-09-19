@@ -42,7 +42,7 @@ class RecipeController extends Controller
 
     //作成したレシピを保存する
     public function storeNewRecipe(Request $request) {
-        $request->validate([
+        $validated = $request->validate([
             'cover_photo_path' => ['required','image', 'max:5120'],
             'title' => ['required', 'string', 'max:255'],
             'introduction' => ['required', 'string', 'max:255'], 
@@ -81,11 +81,16 @@ class RecipeController extends Controller
         // レシピのカバー写真を保存する
         $filename = 'cover-' . $user->id . '-' . uniqid() . '.jpg';
         $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
-        $saveCoverImg = Storage::put('cover_image/' . $filename, $coverImg);
+        $coverPath = 'cover_image' . $filename;
+        //diskをS3に変更します
+        $saveCoverImg = Storage::disk('s3')->put($coverPath, (string) $coverImg);
         
         if(!$saveCoverImg) {
             return back()->with('uploadError', '画像のアップロードに失敗しました。もう一度お試しください。');
         }
+
+        //アップロードした画像のフルパスを取得：
+        $validated['cover_photo_path'] =  Storage::disk('s3')->url($coverPath);
 
         $recipe->cover_photo_path = $filename;
 

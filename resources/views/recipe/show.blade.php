@@ -11,7 +11,7 @@ $userData = auth()->user();
           <div class="flex flex-row py-3">
             @if($showUserData->icon_path)
             <a href="{{ route('user.show', ['user_id' => $showRecipeData->user_id]) }}">
-              <img class="w-8 h-8 rounded-full" src="{{ asset('storage/icon_image/' . $showUserData->icon_path) }}" alt="user photo">
+              <img class="w-8 h-8 rounded-full" src="{{ $showUserData->icon_path }}" alt="user photo">
             </a>
             @else
             <img class="w-8 h-8 rounded-full" src="/default_avatar.jpeg" alt="user photo">
@@ -25,7 +25,7 @@ $userData = auth()->user();
       <!--　レシピのカバー写真と作成・更新日　-->
           <div class="flex flex-row">
             <div class="mb-8 flex items-center justify-center max-w-4xl max-h-96 lg:max-w-lg md:w-1/2 w-5/6 md:mb-0">
-              <img class="object-cover object-center rounded" src="{{ asset('storage/cover_image/' . $showRecipeData->cover_photo_path) }}">
+              <img class="object-cover object-center rounded" src="{{ $showRecipeData->cover_photo_path }}">
             </div>
             <div class="flex flex-col-reverse text-xs text-neutral-600 px-5">
               <p>レシピ公開日：{{ $showRecipeData->created_at }}</p>
