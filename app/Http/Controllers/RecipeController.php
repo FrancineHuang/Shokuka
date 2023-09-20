@@ -202,7 +202,6 @@ class RecipeController extends Controller
 
     //レシピの投稿を更新する
     public function updateRecipe(Request $request, $id) {
-        //dd($request->all());
         $request->validate([
             'cover_photo_path' => ['sometimes','image', 'max:5120'],
             'title' => ['sometimes', 'string', 'max:255'],
@@ -258,9 +257,15 @@ class RecipeController extends Controller
         if ($request->hasFile('cover_photo_path')) {
             $filename = 'cover-' . $user . '-' . uniqid() . '.jpg';
             $coverImg = Image::make($request->file('cover_photo_path'))->fit(800, 600)->encode('jpg');
-            Storage::put('cover_image/' . $filename, $coverImg);
-            Storage::delete('cover_image/' . $recipe->cover_photo_path);
-            $recipe->cover_photo_path = $filename;
+            $coverPath = 'cover_image/' . $filename;
+            $updateNewCover = Storage::disk('s3')->put($coverPath, (string) $coverImg);
+            $deleteOldCover = Storage::delete('cover_image/' . $recipe->cover_photo_path);
+
+            if(!$updateNewCover && !$deleteOldCover) {
+                return back()->with('uploadError', '画像のアップロードに失敗しました。もう一度お試しください。');
+            }
+
+            $recipe->cover_photo_path = Storage::disk('s3')->url($coverPath);
         }
     
         $recipe->save();
@@ -317,9 +322,10 @@ class RecipeController extends Controller
                     if (isset($stepData['step_photo_path']) && !empty($stepData['step_photo_path'])) {
                         $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
                         $stepImg = Image::make($request->file('step_photo_path'))->fit(800, 600)->encode('jpg');
-                        Storage::put('step_image/' . $filename, $stepImg);
+                        $stepPath = 'step_image/' . $filename;
+                        Storage::put($stepPath, (string) $stepImg);
                         Storage::delete('step_image/' . $step->step_photo_path);
-                        $step->step_photo_path = $filename;
+                        $step->step_photo_path = Storage::disk('s3')->url($stepPath);
                     }
                 
                     $step->save();
@@ -333,8 +339,9 @@ class RecipeController extends Controller
                     if (isset($stepData['step_photo_path'])) {
                         $filename = 'step-' . $user . '-' . uniqid() . '.jpg';
                         $stepImg = Image::make($stepData['step_photo_path'])->fit(300, 400)->encode('jpg');
-                        Storage::put('step_image/' . $filename, $stepImg);
-                        $step->step_photo_path = $filename;
+                        $stepPath = 'step_image/' . $filename;
+                        Storage::put($stepPath, (string) $stepImg);
+                        $step->step_photo_path = Storage::disk('s3')->url($stepPath);
                     }
                 
                     $step->save();
