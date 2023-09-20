@@ -38,7 +38,12 @@ class UserController extends Controller
         $showUserData = User::with('recipes')->find($user_id);
         $showRecipeData = $showUserData->recipes;
 
-        return view('user.all_recipes', compact('showUserData', 'showRecipeData'));
+        // ユーザーがフォローしている人の数を取得
+        $followingCount = Follower::where('follower_id', $user_id)->count(); 
+        // そのユーザーをフォローしている人の数を取得
+        $followerCount = Follower::where('followee_id', $user_id)->count();
+
+        return view('user.all_recipes', compact('showUserData', 'showRecipeData', 'followingCount', 'followerCount'));
     }
 
     //ユーザーのお気に入りレシピ一覧ページ
