@@ -10,7 +10,7 @@ $userData = auth()->user();
 
                 {{-- アイコン --}}
                 @if ($userData->icon_path)
-                <img src="{{ asset('storage/icon_image/' . $userData->icon_path) }}" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start">
+                <img src="{{ $userData->icon_path }}" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start">
                 @else
                 <img src="/default_avatar.jpeg" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start">
                 @endif
@@ -23,11 +23,11 @@ $userData = auth()->user();
                     <div class="flex flex-row mt-5">
                         <div class="flex flex-row">
                             <p class="text-neutral-500">フォロー中</p>
-                            <p class="text-neutral-700 pl-2">5</p>
+                            <p class="text-neutral-700 pl-2">{{ $followingCount }}</p>
                         </div>
                         <div class="flex flex-row pl-5">
                             <p class="text-neutral-500">フォロワー</p>
-                            <p class="text-neutral-700 pl-2">5</p>
+                            <p class="text-neutral-700 pl-2">{{ $followerCount }}</p>
                         </div>
                     </div>
                     <div class="flex flex-row pt-3">
@@ -56,7 +56,7 @@ $userData = auth()->user();
     @foreach($likedRecipes as $like)
     <div class="flex justify-center my-1">
         <div class="w-9/12 my-3 flex flex-row bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="{{ asset('storage/cover_image/' . $like->recipe->cover_photo_path)}}">
+            <img class="object-cover h-36 w-36 lg:h-36 lg:w-36 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" src="{{ $like->recipe->cover_photo_path }}">
             <div class="mb-8 ml-8">
                 <div class="text-gray-900 font-bold text-xl mb-2">{{ $like->recipe->title }}</div>
                 <p class="text-gray-700 text-base">{{ $like->recipe->introduction }}</p>
@@ -65,6 +65,9 @@ $userData = auth()->user();
     </div>
     @endforeach
 @else
+    <div class="flex justify-between w-10/12 my-5 lg:pl-40">
+        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">お気に入りのレシピ</h4>
+    </div>
     <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
         レシピがありません。
     </p>
