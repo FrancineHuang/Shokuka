@@ -19,7 +19,7 @@ $userData = auth()->user();
         @if($results)
           @forelse($results as $result)
           <div class="overflow-hidden transition-shadow duration-300 bg-white rounded shadow-sm">
-            <img src="{{ asset('storage/cover_image/' . $result->cover_photo_path) }}" class="object-cover w-full h-64" alt="" />
+            <img src="{{ $result->cover_photo_path }}" class="object-cover w-full h-64" alt="" />
             <div class="p-5 border border-t-0">
               <p class="mb-3 text-xs font-semibold tracking-wide uppercase">
                 <a href="/" class="transition-colors duration-200 text-blue-gray-900 hover:text-deep-purple-accent-700" aria-label="Category" title="traveling">{{ $result->user->username }}</a>

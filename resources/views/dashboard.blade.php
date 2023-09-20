@@ -76,6 +76,9 @@ $showRecipeData = $userData->recipes()->latest()->limit(3)->get();
         </div>
     </div>
     @empty
+    <div class="flex justify-between w-10/12 my-5 lg:pl-40">
+        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">レシピ</h4>
+    </div>
     <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
         レシピがありません。
     </p>
@@ -104,6 +107,9 @@ $showRecipeData = $userData->recipes()->latest()->limit(3)->get();
     </div>
     @endforeach
 @else
+    <div class="flex justify-between w-10/12 my-5 lg:pl-40">
+        <h4 class="text-red-800 text-lg font-semibold text-center md:text-left">お気に入りのレシピ</h4>
+    </div>
     <p class="flex items-center justify-center text-base text-neutral-900 my-2 py-1 pl-7 max-w-4xl">
         レシピがありません。
     </p>
