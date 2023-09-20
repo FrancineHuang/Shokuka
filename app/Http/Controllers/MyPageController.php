@@ -25,7 +25,7 @@ class MyPageController extends Controller
         return view('dashboard', compact('showUserData', 'showRecipeData', 'likedRecipes', 'followingCount', 'followerCount'));
     }
 
-    public function showFollowers() {
+    public function showFollowers($user_id) {
         $user_id = Auth::id();
         $showUserData = User::with('recipes')->find($user_id);
         $showRecipeData = $showUserData->recipes;

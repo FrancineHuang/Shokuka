@@ -32,7 +32,7 @@ class LikeController extends Controller
         return redirect()->back();
     }
 
-    public function showFollowers() {
+    public function showFollowers($user_id) {
         $user_id = Auth::id();
         $showUserData = User::with('recipes')->find($user_id);
         $showRecipeData = $showUserData->recipes;
