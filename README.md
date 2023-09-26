@@ -1,55 +1,33 @@
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<img src="https://github.com/FrancineHuang/shokuka/assets/105546843/765372e2-6549-46c2-894b-1c0880cf4ccc" alt="Introduce Image">
 </p>
 
-## About Shokuka
+## 作りたいものは？
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**本格！手軽！中華料理のレシピ投稿アプリーー「食華（しょくか）」**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 背景：私はグルメが大好きな中国人です。5年ほど前、私は日本に来たばかりの頃、日々本格中華料理を恋しくなりました。その後、コロナ禍の影響の下で自宅で料理を作り始め、中華料理を作る習慣をつけました。日本人の友達としょっちゅう中華料理を食べたり、自分が作った中華料理をみんなに一緒にシェアしたり、いい思い出を作りました。しかし、私は自分が好きなことからいろんな問題点を見つけました。
+- 問題点1：来日中国人留学生人数の増加によって、池袋や高田馬場では本格中華料理店が増えました。しかし、中華料理店の外食費は母国より高いです。
+- 問題点2：東京と比べて、地方の中華物産店と本格中華料理店が少ないので、地方住みの中国人にとって母国の味を食べるのはかなり不便になります。
+- 問題点3：中華料理に興味があるが、作り方がわからない日本人もいます。自分が日本のスーパーで手軽に買える食材を買って中華料理をアレンジしたので、自分の工夫点をシェアしたいです。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+そのため、日本で手軽に中華料理を食べたい、あるいは作りたい人たちの困りごとを解決したいという思いを込んでこのアプリを作りたいです。
 
-## Learning Laravel
+## 使用している技術・ツール
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+使用している言語、技術とツールをここで挙げます。バージョンは全て**開発時点における**最新バージョンで実装します。
+- **Frontend**: HTML / JavaScript / Tailwind CSS
+- **Backend**: PHP + Laravel / MySQL(phpMyAdmin)
+- **Infrastructure**: Docker / AWS
+- **Others**: Git / Github Actions / Figma / VSCode / Lucidchart
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 実装したい機能は？
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+基本のCRUDを通して、ユーザーがレシピの作成、閲覧、更新と削除ができます。
 
-## Laravel Sponsors
+### ER図
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F816933%2Fe35ef89b-044b-8981-9b81-2eb32abd875c.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=57990c7a8191370e2ddeca5648fc2b3f" alt="Introduce Image">
 
 ## Code of Conduct
 
