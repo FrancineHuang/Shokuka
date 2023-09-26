@@ -1,4 +1,5 @@
 <p align="center">
+![Neutral Simple Modern Feminine Motivational Quote LinkedIn Article Cover Image](https://github.com/FrancineHuang/shokuka/assets/105546843/765372e2-6549-46c2-894b-1c0880cf4ccc)
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
