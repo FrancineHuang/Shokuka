@@ -1,8 +1,5 @@
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<a href="https://shokuka.com/"><img src="https://github.com/FrancineHuang/shokuka/assets/105546843/79611e46-16cb-4a2c-9274-d0a3b18d96f7" alt="Banner"></a>
 </p>
 
 ## 作りたいものは？
@@ -76,7 +73,9 @@
 ## レシピ作成
 
 それでは、麻婆豆腐の作り方を書いてみようと思います！
+
 実際にレシピを書くためきっと長い文章を書く必要があるでしょう。
+
 機能を紹介するため、あくまでも適当なレシピを書きますので、ご了承ください。
 
 <img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F816933%2Fe6e7500c-0dce-58ab-4c31-d0e88424297f.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=bc910ea95e42688d5e5dd957969074f9" alt="Make1">
@@ -86,6 +85,7 @@
 <img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F816933%2Fe1a729ce-a740-6b0e-7c36-3ae5e6445bbc.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=ca0c2f28ff9eee307fe1e17bbf94394c" alt="Make2">
 
 次は材料と分量を追加します。
+
 素のJavaScriptで動的な入力欄を作成したので、材料の追加、削除ができます。
 
 <img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F816933%2F9ebadd8e-48c3-281c-c6e0-b8e057a45405.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=e9fb713a2f14ea14ef361f6010ffddd7" alt="Make3">
@@ -95,7 +95,9 @@
 <img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F816933%2Fef1e4e8d-c499-0e67-f970-c038941df27f.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=d3a474878676776336866ede78abe999" alt="Make4">
 
 最後に、このレシピを作るための注意点も一筆で書きましょう。
+
 ちなみに、麻婆豆腐を作るなら絹豆腐の方がお美味しいでしょうね。
+
 いざ、投稿へ！
 
 ## レシピ投稿
@@ -109,12 +111,15 @@
 <img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F816933%2F97c12325-b664-99f3-46eb-d59d0ef5eba5.png?ixlib=rb-4.0.0&auto=format&gif-q=60&q=75&w=1400&fit=max&s=a6eab664a5209e0cd2c64cd04945db97" alt="Recipe3">
 
 先ほど適当に書いたレシピをちゃんと反映されました。
+
 レシピの中に何か追加したい内容があれば、もちろん再編集して、更新できます。
 
 ## もっと詳しく知りたい...？
 
 もっとたくさんの裏話を知りたい？→[完全版記事](https://qiita.com/FrancineH/items/25d9eccac22e43dd5fcb)
+
 私の経歴を知りたい？→[Wantedly](https://qiita.com/FrancineH/items/25d9eccac22e43dd5fcb)
+
 Let's connect!→[Twitter(X)](https://twitter.com/Francine_webdev)
 
 お読みいただき、ありがとうございます！
